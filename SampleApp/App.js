@@ -1,12 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+ // JSX 사용하기 위해 React를 import.
+ // React가 JSX를 Javascript 형태로 변환해줌.
+import React, {Component} from 'react';
 
-import React from 'react';
+// react-native에서 제공하는 컴포넌트 import.
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,6 +10,9 @@ import {
   View,
   Text,
   StatusBar,
+  Button,
+  Platform,
+  //Image,
 } from 'react-native';
 
 import {
@@ -24,91 +23,45 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+type Props = {};
+export default class App extends Component<Props> {
+  /* constructor(생성자): 클래스 실행시 가장 먼저 실행되는 함수. */
+  constructor(props){
+    super(props);  // 상속받은 component의 생성자를 호출. constructor에서 가장 먼저 실행하는 게 원칙!
+    this.state={count:0}; // 사용할 변수 초기화
+  }
 
+  _updateCount(){
+
+    console.log("updateCount");
+
+    // this.setState(): state를 업데이트 하는 함수
+    this.setState({
+      count:this.state.count+1
+    });
+    // this.setState((prevState, props) => {
+    //   return {count:prevState.count+1}
+    // });
+  }
+
+  // state.count: state 변화하면 render가 실행됨
+  render() {
+    console.log("render 실행");
+    return (
+      <View style={styles.container}>
+        <Button
+          color="green"
+          title={this.state.count.toString()}
+          // 버튼 눌렀을 때 실행되는 함수를 onPress 속성으로 전달.
+          // bind(this): 함수의 this를 현재 객체(클래스) 바운더리의 this로 지정하겠다"는 뜻
+          onPress={this._updateCount.bind(this)} />
+      </View>
+    );
+  }
+}
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  container: {
+    flex: 1,
+    padding: 20,
   },
 });
-
-export default App;
