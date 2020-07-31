@@ -1,60 +1,45 @@
- // JSX 사용하기 위해 React를 import.
- // React가 JSX를 Javascript 형태로 변환해줌.
 import React, {Component} from 'react';
+import {StyleSheet, Button, View} from 'react-native';
+// custom component 가져오기
+// ./TestComponent : 실제 파일명을 뜻함
+import TestComponent from './TestComponent';
 
-// react-native에서 제공하는 컴포넌트 import.
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Button,
-  Platform,
-  //Image,
-} from 'react-native';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const datas1 = [
+  {id:"gdHong",count:0,color:"red"},
+  {id:"ksYu",count:0,color:"green"},
+  {id:"ssLee",count:0,color:"blue"},
+];
 
 type Props = {};
 export default class App extends Component<Props> {
-  /* constructor(생성자): 클래스 실행시 가장 먼저 실행되는 함수. */
   constructor(props){
-    super(props);  // 상속받은 component의 생성자를 호출. constructor에서 가장 먼저 실행하는 게 원칙!
-    this.state={count:0}; // 사용할 변수 초기화
+    super(props);
+    this.state={datas:datas1};
   }
 
-  _updateCount(){
+  _updateCount(idx){
+    const newDatas = this.state.datas;
+    newDatas[idx].count = newDatas[idx].count + 1;
+    // newArray[idx].count++;
 
-    console.log("updateCount");
-
-    // this.setState(): state를 업데이트 하는 함수
-    this.setState({
-      count:this.state.count+1
-    });
-    // this.setState((prevState, props) => {
-    //   return {count:prevState.count+1}
-    // });
+    this.setState({datas:newDatas});
   }
 
-  // state.count: state 변화하면 render가 실행됨
   render() {
-    console.log("render 실행");
     return (
       <View style={styles.container}>
-        <Button
-          color="green"
-          title={this.state.count.toString()}
-          // 버튼 눌렀을 때 실행되는 함수를 onPress 속성으로 전달.
-          // bind(this): 함수의 this를 현재 객체(클래스) 바운더리의 this로 지정하겠다"는 뜻
-          onPress={this._updateCount.bind(this)} />
+        {
+          this.state.datas.map((data, index) => {
+            return(
+              <TestComponent
+                key={data.id}
+                id={data.id}
+                color={data.color}
+                title={data.count.toString()}
+                updateCount={this._updateCount.bind(this, index)}/>
+            )
+          })
+        }
       </View>
     );
   }
