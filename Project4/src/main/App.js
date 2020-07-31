@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import {
   SafeAreaView,
@@ -14,17 +6,48 @@ import {
   View,
   Text,
   StatusBar,
+  FlatList,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import ChoreoItem from '../components/ChoreoItem';
 
-const App: () => React$Node = () => {
+class App extends React.Component {
+
+  state = {
+    choreoNote: [{
+      lyrics: "잘 있나요~", 
+      formation: "나의 사랑아", 
+      choreo: require('../../asset/btn_delete.png')
+    }, {
+      lyrics: "보고 싶은", 
+      formation: "나의 사람아~", 
+      choreo: require('../../asset/btn_delete.png')
+    }]
+  }
+
+  _makeChoreoItem = ({item, index}) => {
+    return (
+      <ChoreoItem
+      lyrics={item.lyrics} 
+      formation={item.formation} 
+      choreo={item.choreo}/>
+    )
+  }
+
+  render() {
+    console.log("ham");
+    return (
+      <View>
+        {/* <ChoreoItem lyrics={this.state.choreoNote[0].lyrics} formation={this.state.choreoNote[0].formation} choreo={this.state.choreoNote[0].choreo}/>
+        <ChoreoItem lyrics={this.state.choreoNote[1].lyrics} formation={this.state.choreoNote[1].formation} choreo={this.state.choreoNote[1].choreo}/> */}
+        <FlatList
+        data={this.state.choreoNote}
+        renderItem={this._makeChoreoItem}/>
+      </View>
+    );
+  }
+  
+  /*
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -70,45 +93,11 @@ const App: () => React$Node = () => {
       </SafeAreaView>
     </>
   );
+  */
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
+  
 });
 
 export default App;
