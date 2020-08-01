@@ -32,14 +32,24 @@ export default class Draggable extends Component {
     });
   }
 
-  componentDidMount() {
+  onChange = (e) => {
+    console.log("onChange: " + this.props.position)
     var transformList = [];
-    for(var i=0; i<this.props.position.length; i++){
+
+    transformList.push( Animated.timing(
+      this.state.pan,
+      {
+        toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
+        duration: 1
+      }
+    ));
+
+    for(var i=1; i<this.props.position.length; i++){
       transformList.push( Animated.timing(
         this.state.pan,
         {
           toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
-          duration: this.props.position[i].duration
+          duration: (this.props.position[i].time - this.props.position[i-1].time)
         }
       ));
     }
@@ -47,6 +57,8 @@ export default class Draggable extends Component {
   }
 
   render() {
+    console.log("ham2");
+    this.onChange();
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
     return (
