@@ -1,25 +1,53 @@
 import React, {Component} from "react";
-import {StyleSheet, Text, View, Image, ListView} from "react-native";
-
-var btn_delete = require('../../asset/btn_delete.png')
+import {StyleSheet, Text, View, Image, ListView, TextInput} from "react-native";
 
 const ChoreoItem = ({lyrics, formation, choreo}) =>  (
   <View style={styles.container}>
     <Text style={styles.lyricsText}>{lyrics}</Text>
-    <Text style={styles.lyricsText}>{formation}</Text>
-    <Image source={choreo} style={{height: 30, width: 30, justifyContent: 'center', alignItems: 'center'}}/>
+    <View style={styles.choreoContainer}>
+      <Image source={formation} style={styles.formation}/>
+      <TextInput 
+      style={styles.choreoText}>{choreo}</TextInput>
+    </View>
   </View>
 )
 
 const styles = StyleSheet.create({
   container: {
     padding: 3,
+    flexDirection:'column',
+    justifyContent: 'space-between',
+    backgroundColor: 'gray'
+  },
+  choreoContainer : {
     flexDirection:'row',
-    justifyContent: 'space-between'
+    backgroundColor: 'black',
+    padding: 5,
+    alignItems: 'flex-start', // 텍스트 위쪽 정렬을 위해
+    //justifyContent: 'space-between'
   },
   lyricsText: {
-    fontSize: 10
+    fontSize: 15,
+    padding: 3,
+    color: 'white',
+    backgroundColor: 'blue'
   },
+  choreoText: {
+    fontSize: 15,
+    padding: 3,
+    marginLeft: 5,
+    color: 'white',
+    backgroundColor: 'pink',
+  },
+  formation: {
+    height: 100, 
+    width: 150, 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+  choreo: {
+
+  }
 })
 
 export default ChoreoItem
