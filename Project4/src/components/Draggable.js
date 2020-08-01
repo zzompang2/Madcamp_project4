@@ -33,21 +33,17 @@ export default class Draggable extends Component {
   }
 
   componentDidMount() {
-    const transform1 = Animated.timing(
-      this.state.pan,
-      {
-        toValue: {x:100, y:0},
-        duration: 2000
-      }
-    );
-    const transform2 = Animated.timing(
-      this.state.pan,
-      {
-        toValue: {x:this.props.posx, y:this.props.posy},
-        duration: this.props.duration
-      }
-    );
-    Animated.sequence([transform1, transform2]).start();
+    var transformList = [];
+    for(var i=0; i<this.props.position.length; i++){
+      transformList.push( Animated.timing(
+        this.state.pan,
+        {
+          toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
+          duration: this.props.position[i].duration
+        }
+      ));
+    }
+    Animated.sequence(transformList).start();
   }
 
   render() {
