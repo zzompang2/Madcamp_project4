@@ -1,0 +1,5 @@
+// Position.js
+
+class Position {
+  
+}

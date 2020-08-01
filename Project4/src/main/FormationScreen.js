@@ -5,17 +5,21 @@ import {
 
 import ChoreoItem from '../components/ChoreoItem';
 import Draggable from '../components/Draggable';
+// import Position from '../components/Position';
 
 class FormationScreen extends React.Component {
+
+  state = {
+    position1: [
+      {posx: 0, posy:0, duration: 0},
+    ]
+  }
+
   render() {
     console.log("ham");
     return (
       <View>
-        <Draggable number='1'/>
-        <Draggable number='2'/>
-        <Draggable number='3'/>
-        <Draggable number='4'/>
-        <Draggable number='5'/>
+        <Draggable number='1' posx='200' posy='100' duration='2000'/>
       </View>
     );
   }

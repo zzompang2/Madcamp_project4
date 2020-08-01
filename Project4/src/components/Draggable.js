@@ -1,16 +1,11 @@
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  PanResponder,
-  Animated,
-  Text
-} from "react-native";
+import { Text,StyleSheet,PanResponder,Animated } from "react-native";
 
 export default class Draggable extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // 초기값 정의 
       pan: new Animated.ValueXY()
     };
   }
@@ -37,10 +32,27 @@ export default class Draggable extends Component {
     });
   }
 
+  componentDidMount() {
+    const transform1 = Animated.timing(
+      this.state.pan,
+      {
+        toValue: {x:100, y:0},
+        duration: 2000
+      }
+    );
+    const transform2 = Animated.timing(
+      this.state.pan,
+      {
+        toValue: {x:this.props.posx, y:this.props.posy},
+        duration: this.props.duration
+      }
+    );
+    Animated.sequence([transform1, transform2]).start();
+  }
+
   render() {
-    const panStyle = {
-      transform: this.state.pan.getTranslateTransform()
-    }
+    // 위치를 지정할 스타일
+    const panStyle = { transform: this.state.pan.getTranslateTransform() }
     return (
       <Animated.View
         {...this.panResponder.panHandlers}
@@ -53,6 +65,7 @@ export default class Draggable extends Component {
 
 let CIRCLE_RADIUS = 30;
 let styles = StyleSheet.create({
+  // 모양 정의를 위한 스타일
   circle: {
     backgroundColor: "skyblue",
     width: CIRCLE_RADIUS * 2,
