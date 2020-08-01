@@ -11,7 +11,11 @@ class FormationScreen extends React.Component {
     console.log("ham");
     return (
       <View>
-        <Draggable/>
+        <Draggable number='1'/>
+        <Draggable number='2'/>
+        <Draggable number='3'/>
+        <Draggable number='4'/>
+        <Draggable number='5'/>
       </View>
     );
   }

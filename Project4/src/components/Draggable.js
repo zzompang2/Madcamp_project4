@@ -3,12 +3,13 @@ import {
   StyleSheet,
   View,
   PanResponder,
-  Animated
+  Animated,
+  Text
 } from "react-native";
 
 export default class Draggable extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       pan: new Animated.ValueXY()
     };
@@ -31,7 +32,7 @@ export default class Draggable extends Component {
         x: this._val.x,
         y: this._val.y
         })
-        this.state.pan.setValue({ x:0, y:0})
+        this.state.pan.setValue({x:0, y:0})
       }
     });
   }
@@ -41,12 +42,11 @@ export default class Draggable extends Component {
       transform: this.state.pan.getTranslateTransform()
     }
     return (
-      <View>
-        <Animated.View
-          {...this.panResponder.panHandlers}
-          style={[panStyle, styles.circle]}
-        />
-      </View>
+      <Animated.View
+        {...this.panResponder.panHandlers}
+        style={[panStyle, styles.circle]}>
+        <Text style={styles.number}>{this.props.number}</Text>
+      </Animated.View>
     );
   }
 }
@@ -57,6 +57,14 @@ let styles = StyleSheet.create({
     backgroundColor: "skyblue",
     width: CIRCLE_RADIUS * 2,
     height: CIRCLE_RADIUS * 2,
-    borderRadius: CIRCLE_RADIUS
+    borderRadius: CIRCLE_RADIUS,
+  },
+  number: {
+    fontSize: 30,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    marginLeft: 21,
+    marginTop: 8,
+    // backgroundColor: 'red'
   }
 });
