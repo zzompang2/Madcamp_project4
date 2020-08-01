@@ -1,11 +1,13 @@
 import React, {Component} from "react";
-import {StyleSheet, Text, View, Image, ListView, TextInput} from "react-native";
+import {StyleSheet, Text, View, Image, ListView, TextInput, TouchableOpacity} from "react-native";
 
 const ChoreoItem = ({lyrics, formation, choreo}) =>  (
   <View style={styles.container}>
     <Text style={styles.lyricsText}>{lyrics}</Text>
     <View style={styles.choreoContainer}>
-      <Image source={formation} style={styles.formation}/>
+      <TouchableOpacity>
+        <Image source={formation} style={styles.formation}/>
+      </TouchableOpacity>
       <TextInput 
       style={styles.choreoText}>{choreo}</TextInput>
     </View>

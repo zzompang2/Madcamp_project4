@@ -1,71 +1,35 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  FlatList,
-  Image
-} from 'react-native';
+import MainScreen from './MainScreen'
+import FormationScreen from './FormationScreen'
 
-import ChoreoItem from '../components/ChoreoItem';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-class App extends React.Component {
+function HomeScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home!</Text>
+    </View>
+  );
+}
 
-  state = {
-    choreoNote: [{
-      lyrics: "사람들이 움직이는 게 ", 
-      formation: require('../../asset/formation_1.png'),
-      choreo: "업락, 다운락"
-    }, {
-      lyrics: "신기해", 
-      formation: require('../../asset/formation_1.png'),
-      choreo: "스쿠바"
-    },{
-      lyrics: "팔다리가 앞뒤로 막 움 움 움 움직이는 게", 
-      formation: require('../../asset/formation_1.png'),
-      choreo: "스쿠바"
-    }]
-  }
+function SettingsScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Settings!</Text>
+    </View>
+  );
+}
 
-  _makeChoreoItem = ({item, index}) => {
-    return (
-      <ChoreoItem
-      lyrics={item.lyrics} 
-      formation={item.formation} 
-      choreo={item.choreo}/>
-    )
-  }
+const Tab = createBottomTabNavigator();
 
-  render() {
-    console.log("ham");
-    return (
-      <View style={styles.rowContainer}>
-        <Image source={require('../../asset/playerBar.png')} style={styles.playerBar}/>
-        <FlatList
-        data={this.state.choreoNote}
-        renderItem={this._makeChoreoItem}/>
-      </View>
-    );
-  }
-};
-
-const styles = StyleSheet.create({
-  rowContainer : {
-    flexDirection:'row',
-    flex: 1,
-    //justifyContent: 'space-between'
-  },
-  playerBar: {
-    height: '100%', 
-    width: 50, 
-    justifyContent: 'center', 
-    alignItems: 'center',
-    resizeMode: 'contain'
-
-  },
-});
-
-export default App;
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={MainScreen} />
+        <Tab.Screen name="Settings" component={FormationScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
