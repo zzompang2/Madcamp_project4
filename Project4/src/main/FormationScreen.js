@@ -29,13 +29,18 @@ class FormationScreen extends React.Component {
     });
   }
 
+  // 자식 컴포넌트에서 값 받아오기
+  onSearchSubmit(x, y) {
+    console.log("get submit: " + x + ", " + y);
+  }
+
   render() {
     return (
       <View style={styles.columnContainer}>
         <View style={styles.rowContainer}>
           <Musicbar/>
           <View style={styles.formationScreen}>
-            <Draggable number='1' position={this.state.position1}/>
+            <Draggable number='1' position={this.state.position1} onSearchSubmit={this.onSearchSubmit}/>
           </View>
           <View>
             <TextInput

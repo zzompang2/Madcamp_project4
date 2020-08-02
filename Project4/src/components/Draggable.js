@@ -6,10 +6,12 @@ export default class Draggable extends Component {
     super(props);
     this.state = {
       // 초기값 정의 
-      pan: new Animated.ValueXY()
+      pan: new Animated.ValueXY(),
+      x: 0,
+      y: 0,
     };
   }
-  
+
   componentWillMount() {
     // Add a listener for the delta value change
     this._val = { x:0, y:0 }
@@ -22,13 +24,25 @@ export default class Draggable extends Component {
        //moving 제스쳐가 진행중일 때 실행
       onPanResponderMove:
         Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }]),
+
+      // 터치이벤트 발생할 때
       onPanResponderGrant: (e, gesture) => {
         this.state.pan.setOffset({
         x: this._val.x,
-        y: this._val.y
+        y: this._val.y,
         })
-        this.state.pan.setValue({x:0, y:0})
+        this.state.pan.setValue({x:0, y:0});
+        //this.onChange();
+      },
+
+      // 터치이벤트 끝날 때.
+      // 부모 컴포넌트로 값 보내기
+      onPanResponderRelease: (e) => {
+        console.log();
+        this.setState({x: this._val.x, y: this._val.y});
+        this.props.onSearchSubmit(this._val.x, this._val.y);
       }
+      
     });
   }
 
@@ -40,17 +54,20 @@ export default class Draggable extends Component {
       this.state.pan,
       {
         toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
-        duration: 1
+        duration: 1,
+        useNativeDriver: true,
       }
     ));
 
     for(var i=1; i<this.props.position.length; i++){
-      transformList.push( Animated.timing(
-        this.state.pan,
-        {
-          toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
-          duration: (this.props.position[i].time - this.props.position[i-1].time)
-        }
+      transformList.push( 
+        Animated.timing(
+          this.state.pan,
+          {
+            toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
+            duration: (this.props.position[i].time - this.props.position[i-1].time),
+            useNativeDriver: true,
+          }
       ));
     }
     Animated.sequence(transformList).start();
@@ -58,7 +75,6 @@ export default class Draggable extends Component {
 
   render() {
     console.log("ham2");
-    this.onChange();
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
     return (

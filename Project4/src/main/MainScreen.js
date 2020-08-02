@@ -40,7 +40,8 @@ class MainScreen extends React.Component {
         <Musicbar/>
         <FlatList
         data={this.state.choreoNote}
-        renderItem={this._makeChoreoItem}/>
+        renderItem={this._makeChoreoItem}
+        keyExtractor={(item, index) => index}/>
       </View>
     );
   }
