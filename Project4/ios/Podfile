@@ -12,6 +12,10 @@ target 'Project4' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RNSound', :path => '../node_modules/react-native-sound'
+
+  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
+
   target 'Project4Tests' do
     inherit! :complete
     # Pods for testing

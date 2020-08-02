@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {StyleSheet, Text, View, Image, ListView, TextInput, TouchableOpacity} from "react-native";
 
 const ChoreoItem = ({lyrics, formation, choreo}) =>  (

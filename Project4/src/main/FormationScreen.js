@@ -7,6 +7,7 @@ import ChoreoItem from '../components/ChoreoItem';
 import Draggable from '../components/Draggable';
 import { TextInput } from 'react-native-gesture-handler';
 // import Position from '../components/Position';
+import Musicbar from '../components/Musicbar';
 
 class FormationScreen extends React.Component {
   state = {
@@ -31,13 +32,16 @@ class FormationScreen extends React.Component {
   render() {
     return (
       <View style={styles.columnContainer}>
-        <View>
-          <Draggable number='1' position={this.state.position1}/>
-        </View>
-        <View>
-          <TextInput
-          placeholder="pos x"
-          onEndEditing={this._addPosition}/>
+        <View style={styles.rowContainer}>
+          <Musicbar/>
+          <View style={styles.formationScreen}>
+            <Draggable number='1' position={this.state.position1}/>
+          </View>
+          <View>
+            <TextInput
+            placeholder="pos x"
+            onEndEditing={this._addPosition}/>
+          </View>
         </View>
       </View>
     );
@@ -50,14 +54,16 @@ const styles = StyleSheet.create({
     flex: 1,
     //justifyContent: 'space-between'
   },
-  playerBar: {
-    height: '100%', 
-    width: 50, 
-    justifyContent: 'center', 
-    alignItems: 'center',
-    resizeMode: 'contain'
-
+  rowContainer : {
+    flexDirection:'row',
+    flex: 1,
+    backgroundColor: 'gray',
+    //justifyContent: 'space-between'
   },
+  formationScreen: {
+    backgroundColor: 'pink',
+    flex: 1,
+  }
 });
 
 export default FormationScreen;

@@ -1,12 +1,10 @@
 import React from 'react';
 import {
-  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image
+  SafeAreaView,StyleSheet,View,FlatList,
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
-import Draggable from '../components/Draggable';
-import FormationScreen from './FormationScreen';
-import { createStackNavigator } from '@react-navigation/stack';
+import Musicbar from '../components/Musicbar';
 
 class MainScreen extends React.Component {
 
@@ -39,7 +37,7 @@ class MainScreen extends React.Component {
     console.log("ham");
     return (
       <View style={styles.rowContainer}>
-        <Image source={require('../../asset/playerBar.png')} style={styles.playerBar}/>
+        <Musicbar/>
         <FlatList
         data={this.state.choreoNote}
         renderItem={this._makeChoreoItem}/>
