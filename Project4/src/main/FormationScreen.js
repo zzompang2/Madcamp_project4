@@ -14,10 +14,12 @@ class FormationScreen extends React.Component {
     super();
     this.state = {
       position1: [
-        {posx: 0, posy:200, time: 0.001},
-        {posx: 100, posy:0, time: 2},
-        {posx: 200, posy:100, time: 6},
-        {posx: 400, posy:200, time: 8},
+        {posx: 50, posy:0, time: 0},
+        {posx: 50, posy:50, time: 10},
+        {posx: 100, posy:50, time: 20},
+        {posx: 100, posy:100, time: 30},
+        {posx: 150, posy:100, time: 40},
+        {posx: 150, posy:150, time: 50},
       ],
       time: 0,
       pos: {x: 0, y: 0},
@@ -25,10 +27,10 @@ class FormationScreen extends React.Component {
     this.TAG = "FormationScreen/";
   }
 
-  _addPosition = () => {
+  _addPosition(_x, _y) {
     var prevPositionList = [...this.state.position1];
     const curTime = Math.round(this.state.time);
-    const newPosition = {posx: Math.round(this.state.pos.x), posy: Math.round(this.state.pos.y), time: curTime};
+    const newPosition = {posx: _x, posy: _y, time: curTime};
 
     var index = 0;
     var isSame = 0;
@@ -49,8 +51,8 @@ class FormationScreen extends React.Component {
   // 자식 컴포넌트(Draggable)에서 값 받아오기
   onSearchSubmit = (_x, _y) => {
     console.log("get submit in draggable: " + Math.round(_x) + ", " + Math.round(_y));
+    this._addPosition(Math.round(_x), Math.round(_y));
     this.setState({pos: {x: Math.round(_x), y: Math.round(_y)}});
-    console.log("pos: " + this.state.pos);
   }
 
   // 자식 컴포넌트(Musicbar)에서 값 받아오기
@@ -66,11 +68,9 @@ class FormationScreen extends React.Component {
         <View style={styles.rowContainer}>
           <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar}/>
           <View style={styles.formationScreen}>
-            <Draggable number='1' position={this.state.position1} onSearchSubmit={this.onSearchSubmit}/>
+            <Draggable number='1' position={this.state.position1} onSearchSubmit={this.onSearchSubmit} curTime={this.state.time}/>
           </View>
-          <TouchableOpacity onPress={this._addPosition}>
-            <Text>add</Text>
-          </TouchableOpacity>
+
           <FlatList
           style={{backgroundColor: 'yellow', width: 80, flex: 1}}
           data={this.state.position1}

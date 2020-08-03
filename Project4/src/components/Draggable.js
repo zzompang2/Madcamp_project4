@@ -7,8 +7,8 @@ export default class Draggable extends Component {
     this.state = {
       // 초기값 정의 
       pan: new Animated.ValueXY(),
-      x: 0,
-      y: 0,
+      // x: 0,
+      // y: 0,
     };
     this._val = { x:0, y:0 };
     this.state.pan.addListener((value) => this._val = value);
@@ -17,7 +17,8 @@ export default class Draggable extends Component {
       // 주어진 터치 이벤트에 반응할지를 결정
       onStartShouldSetPanResponder: (e, gesture) => true,
 
-       //moving 제스쳐가 진행중일 때 실행
+       // moving 제스쳐가 진행중일 때 실행.
+       // 마우스 따라 움직이도록 하는 코드.
       onPanResponderMove:
         Animated.event(
           [null, 
@@ -29,19 +30,21 @@ export default class Draggable extends Component {
 
       // 터치이벤트 발생할 때
       onPanResponderGrant: (e, gesture) => {
+        console.log(this.TAG + "onPanResponderGrant");
+        console.log(this.TAG + "_val: " + Math.round(this._val.x) + ", " + Math.round(this._val.y));
+
         this.state.pan.setOffset({
         x: this._val.x,
         y: this._val.y,
         })
-        this.state.pan.setValue({x:0, y:0});
+        //this.state.pan.setValue({x:0, y:0});
         //this.onChange();
       },
 
       // 터치이벤트 끝날 때.
-      // 부모 컴포넌트로 값 보내기
       onPanResponderRelease: (e) => {
-        console.log();
-        this.setState({x: this._val.x, y: this._val.y});
+        console.log(this.TAG + "onPanResponderRelease");
+        // 부모 컴포넌트로 값 보내기
         this.props.onSearchSubmit(this._val.x, this._val.y);
       }
     });
@@ -50,7 +53,7 @@ export default class Draggable extends Component {
   }
 
   onChange = (e) => {
-    console.log("onChange: " + this.props.position)
+    console.log(this.TAG + "onChange: " + this.props.position)
     var transformList = [];
 
     transformList.push( 
@@ -77,10 +80,23 @@ export default class Draggable extends Component {
     Animated.sequence(transformList).start();
   }
 
+  getCurPosition() {
+    for(var i=0; i<this.props.position.length; i++){
+      if(this.props.curTime < this.props.position[i].time){
+        break;
+      }
+    }
+    return({x:this.props.position[i-1].posx, y: this.props.position[i-1].posy})
+  }
+
   render() {
     console.log(this.TAG + "render");
+    console.log(this.TAG + "getCurPosition: " + this.getCurPosition().x +", "+this.getCurPosition().y);
+    //this.state.pan.setValue(this.getCurPosition())
+    
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
+
     return (
       <Animated.View
         {...this.panResponder.panHandlers}
