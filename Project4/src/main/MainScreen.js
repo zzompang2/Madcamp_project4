@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  SafeAreaView,StyleSheet,View,FlatList,
+  SafeAreaView, StyleSheet, View, FlatList,
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
@@ -24,7 +24,7 @@ class MainScreen extends React.Component {
     }]
   }
 
-  _makeChoreoItem = ({item, index}) => {
+  _makeChoreoItem = ({item}) => {
     return (
       <ChoreoItem
       lyrics={item.lyrics} 
@@ -41,7 +41,7 @@ class MainScreen extends React.Component {
         <FlatList
         data={this.state.choreoNote}
         renderItem={this._makeChoreoItem}
-        keyExtractor={(item, index) => index}/>
+        keyExtractor={item => item.lyrics}/>
       </View>
     );
   }

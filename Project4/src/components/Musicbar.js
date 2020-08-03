@@ -15,8 +15,8 @@ const img_playjumpright = require('../../asset/ui_playjumpright.png');
 //음악재생바
 class Musicbar extends React.Component{
 
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       playState: 'paused', //playing, paused
       playSeconds: 0,
@@ -27,7 +27,7 @@ class Musicbar extends React.Component{
   }
 
   componentDidMount(){
-    this.play();
+    this.play();  // 뮤직 플레이!
     
     this.timeout = setInterval(() => {
       if(this.sound && this.sound.isLoaded() && this.state.playState == 'playing' && !this.sliderEditing){
@@ -52,6 +52,7 @@ class Musicbar extends React.Component{
   }
   onSliderEditEnd = () => {
     this.sliderEditing = false;
+    this.props.onSearchSubmit(this.state.playSeconds);
   }
   onSliderEditing = value => {
     if(this.sound){
@@ -99,7 +100,6 @@ class Musicbar extends React.Component{
     if(this.sound){
       this.sound.pause();
     }
-
     this.setState({playState:'paused'});
   }
 

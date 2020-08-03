@@ -65,7 +65,7 @@ export default class Draggable extends Component {
           this.state.pan,
           {
             toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
-            duration: (this.props.position[i].time - this.props.position[i-1].time),
+            duration: (this.props.position[i].time - this.props.position[i-1].time) * 1000,
             useNativeDriver: true,
           }
       ));

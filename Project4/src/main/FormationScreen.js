@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image
+  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
@@ -10,43 +10,52 @@ import { TextInput } from 'react-native-gesture-handler';
 import Musicbar from '../components/Musicbar';
 
 class FormationScreen extends React.Component {
-  state = {
-    position1: [
-      {posx: 0, posy:200, time: 1},
-      {posx: 100, posy:0, time: 2000},
-      {posx: 200, posy:100, time: 6000},
-      {posx: 400, posy:200, time: 8000},
-    ]
+  constructor(){
+    super();
+    this.state = {
+      position1: [
+        {posx: 0, posy:200, time: 0.001},
+        {posx: 100, posy:0, time: 2},
+        {posx: 200, posy:100, time: 6},
+        {posx: 400, posy:200, time: 8},
+      ],
+    }
+    this.pos = {x: 0, y: 0};
+    this.time = 0;
   }
 
   _addPosition = () => {
     var prevPositionList = [...this.state.position1];
-    const newPosition = {posx: 100, posy:100, time: 4000};
+    const newPosition = {posx: 100, posy:100, time: this.time};
     prevPositionList.splice(2, 0, newPosition);
 
-    this.setState({
-      position1: prevPositionList
-    });
+    this.setState({ position1: prevPositionList });
   }
 
-  // 자식 컴포넌트에서 값 받아오기
-  onSearchSubmit(x, y) {
-    console.log("get submit: " + x + ", " + y);
+  // 자식 컴포넌트(Draggable)에서 값 받아오기
+  onSearchSubmit = (_x, _y) => {
+    console.log("get submit in draggable: " + Math.round(_x) + ", " + Math.round(_y));
+    this.pos = {x: Math.round(_x), y: Math.round(_y)};
+    console.log("pos: " + this.pos);
+  }
+
+  // 자식 컴포넌트(Musicbar)에서 값 받아오기
+  onSearchSubmitInMusicbar = (_time) => {
+    console.log("get submit in musicbar: " + _time);
+    this.time = _time;
   }
 
   render() {
     return (
       <View style={styles.columnContainer}>
         <View style={styles.rowContainer}>
-          <Musicbar/>
+          <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar}/>
           <View style={styles.formationScreen}>
             <Draggable number='1' position={this.state.position1} onSearchSubmit={this.onSearchSubmit}/>
           </View>
-          <View>
-            <TextInput
-            placeholder="pos x"
-            onEndEditing={this._addPosition}/>
-          </View>
+          <TouchableOpacity onPress={this._addPosition}>
+            <Text>add</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
