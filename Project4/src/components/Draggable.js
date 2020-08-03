@@ -7,8 +7,6 @@ export default class Draggable extends Component {
     this.state = {
       // 초기값 정의 
       pan: new Animated.ValueXY(),
-      // x: 0,
-      // y: 0,
     };
     this._val = { x:0, y:0 };
     this.state.pan.addListener((value) => this._val = value);
@@ -52,8 +50,8 @@ export default class Draggable extends Component {
     this.TAG = "Draggable/";
   }
 
-  onChange = (e) => {
-    console.log(this.TAG + "onChange: " + this.props.position)
+  playAnimation() {
+    console.log(this.TAG + "playAnimation: " + this.props.position)
     var transformList = [];
 
     transformList.push( 
@@ -86,14 +84,11 @@ export default class Draggable extends Component {
         break;
       }
     }
-    console.log("i: "+ i);
     if(i == this.props.position.length) {
       return({x: this.props.position[i-1].posx, y: this.props.position[i-1].posy});}
     
     const dx = (this.props.position[i].posx - this.props.position[i-1].posx) * (this.props.curTime - this.props.position[i-1].time) / (this.props.position[i].time - this.props.position[i-1].time);
     const dy = (this.props.position[i].posy - this.props.position[i-1].posy) * (this.props.curTime - this.props.position[i-1].time) / (this.props.position[i].time - this.props.position[i-1].time);
-
-    console.log("dx: "+ dx + ", dy: " + dy);
 
     return({x: this.props.position[i-1].posx + dx, y: this.props.position[i-1].posy + dy})
   }
@@ -106,11 +101,8 @@ export default class Draggable extends Component {
     this.state.pan.setOffset({x: 0, y: 0})
     this.state.pan.setValue(this.getCurPosition())
     
-    //this.state.pan.setValue({x:0, y:0})
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
-    //const panStyle = { transform: [{translateX: this.getCurPosition().translateX}, {translateY: this.getCurPosition().translateY}] }
-
     return (
       <Animated.View
         {...this.panResponder.panHandlers}
@@ -118,6 +110,36 @@ export default class Draggable extends Component {
         <Text style={styles.number}>{this.props.number}</Text>
       </Animated.View>
     );
+  }
+
+  componentDidUpdate() {
+    console.log(this.TAG + "componentDidMount: " + this.props.toggle);
+    if(this.props.toggle) {
+      var transformList = [];
+
+      transformList.push( 
+        Animated.timing(
+          this.state.pan,
+          {
+            toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
+            duration: 1,
+            useNativeDriver: true,
+          }
+      ));
+
+      for(var i=1; i<this.props.position.length; i++){
+        transformList.push( 
+          Animated.timing(
+            this.state.pan,
+            {
+              toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
+              duration: (this.props.position[i].time - this.props.position[i-1].time) * 1000,
+              useNativeDriver: true,
+            }
+        ));
+      }
+      Animated.sequence(transformList).start(); 
+    }
   }
 }
 

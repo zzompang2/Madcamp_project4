@@ -22,7 +22,7 @@ class FormationScreen extends React.Component {
         {posx: 150, posy:150, time: 50},
       ],
       time: 0,
-      //pos: {x: 0, y: 0},
+      animationPlayToggle: false,
     }
     this.pos = {x: 0, y: 0};
     this.TAG = "FormationScreen/";
@@ -66,14 +66,28 @@ class FormationScreen extends React.Component {
     this.setState({time: _time});
   }
 
+  playAnimation = (isPlay) => {
+    console.log(this.TAG + "playAnimation: " + isPlay);
+    this.setState({animationPlayToggle: isPlay});
+  }
+
+  stopAnimation = () => {
+    this.setState({animationPlayToggle: false});
+  }
+
   render() {
     console.log(this.TAG + "render");
     return (
       <View style={styles.columnContainer}>
         <View style={styles.rowContainer}>
-          <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar}/>
+          <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation}/>
           <View style={styles.formationScreen}>
-            <Draggable number='1' position={this.state.position1} onSearchSubmit={this.onSearchSubmit} curTime={this.state.time}/>
+            <Draggable 
+            number='1' 
+            position={this.state.position1} 
+            onSearchSubmit={this.onSearchSubmit} 
+            curTime={this.state.time} 
+            toggle={this.state.animationPlayToggle}/>
           </View>
 
           <FlatList
@@ -81,11 +95,20 @@ class FormationScreen extends React.Component {
           data={this.state.position1}
           renderItem={({item}) => {
             return (
-              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {item.posx}, {item.posy}</Text>)
+              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {item.posx}, {item.posy}</Text>
+            )
           }}
           keyExtractor={(item, index) => index.toString()}/>
         </View>
-        <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
+        <View style={{flexDirection:'row', backgroundColor: 'gray', justifyContent:'space-between'}}>
+          <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
+          <TouchableOpacity onPress={this.playAnimation}>
+            <Text>Play</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.stopAnimation}>
+            <Text>Stop</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

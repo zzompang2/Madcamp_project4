@@ -65,6 +65,9 @@ class Musicbar extends React.Component{
     if(this.sound){
       this.sound.play(this.playComplete);
       this.setState({playState:'playing'});
+      // 애니메이션 실행을 위해 전달.
+      if(this.props.playAnimation != undefined)
+        this.props.playAnimation(true);
     }else{
       //const filepath = this.props.navigation.state.params.filepath;
       //const filepath = 'file:///Phone/sdcard/Music/madclown.mp3';
@@ -79,6 +82,9 @@ class Musicbar extends React.Component{
         }else{
           this.setState({playState:'playing', duration:this.sound.getDuration()});
           this.sound.play(this.playComplete);
+          // 애니메이션 실행을 위해 전달.
+          if(this.props.playAnimation != undefined)
+            this.props.playAnimation(true);
         }
       });    
     }
@@ -101,6 +107,9 @@ class Musicbar extends React.Component{
       this.sound.pause();
     }
     this.setState({playState:'paused'});
+    // 애니메이션 실행을 위해 전달.
+    if(this.props.playAnimation != undefined)
+      this.props.playAnimation(false);
   }
 
   jumpPrev3Seconds = () => {this.jumpSeconds(-3);}
