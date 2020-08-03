@@ -10,11 +10,7 @@ export default class Draggable extends Component {
       x: 0,
       y: 0,
     };
-  }
-
-  componentWillMount() {
-    // Add a listener for the delta value change
-    this._val = { x:0, y:0 }
+    this._val = { x:0, y:0 };
     this.state.pan.addListener((value) => this._val = value);
     // Initialize PanResponder with move handling
     this.panResponder = PanResponder.create({
@@ -23,7 +19,13 @@ export default class Draggable extends Component {
 
        //moving 제스쳐가 진행중일 때 실행
       onPanResponderMove:
-        Animated.event([null, { dx: this.state.pan.x, dy: this.state.pan.y }]),
+        Animated.event(
+          [null, 
+          { dx: this.state.pan.x, 
+            dy: this.state.pan.y }
+          ], 
+          {useNativeDriver: false}
+        ),
 
       // 터치이벤트 발생할 때
       onPanResponderGrant: (e, gesture) => {
@@ -42,21 +44,23 @@ export default class Draggable extends Component {
         this.setState({x: this._val.x, y: this._val.y});
         this.props.onSearchSubmit(this._val.x, this._val.y);
       }
-      
     });
+
+    this.TAG = "Draggable/";
   }
 
   onChange = (e) => {
     console.log("onChange: " + this.props.position)
     var transformList = [];
 
-    transformList.push( Animated.timing(
-      this.state.pan,
-      {
-        toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
-        duration: 1,
-        useNativeDriver: true,
-      }
+    transformList.push( 
+      Animated.timing(
+        this.state.pan,
+        {
+          toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
+          duration: 1,
+          useNativeDriver: true,
+        }
     ));
 
     for(var i=1; i<this.props.position.length; i++){
@@ -74,7 +78,7 @@ export default class Draggable extends Component {
   }
 
   render() {
-    console.log("ham2");
+    console.log(this.TAG + "render");
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
     return (

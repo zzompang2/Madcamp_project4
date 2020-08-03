@@ -19,33 +19,48 @@ class FormationScreen extends React.Component {
         {posx: 200, posy:100, time: 6},
         {posx: 400, posy:200, time: 8},
       ],
+      time: 0,
+      pos: {x: 0, y: 0},
     }
-    this.pos = {x: 0, y: 0};
-    this.time = 0;
+    this.TAG = "FormationScreen/";
   }
 
   _addPosition = () => {
     var prevPositionList = [...this.state.position1];
-    const newPosition = {posx: 100, posy:100, time: this.time};
-    prevPositionList.splice(2, 0, newPosition);
+    const curTime = Math.round(this.state.time);
+    const newPosition = {posx: Math.round(this.state.pos.x), posy: Math.round(this.state.pos.y), time: curTime};
 
+    var index = 0;
+    var isSame = 0;
+    for(index=0; index<prevPositionList.length; index++){
+      if(curTime <= prevPositionList[index].time){
+        // 같은 시간에 다른 값이 있으면 대체
+        if(curTime == prevPositionList[index].time){
+          isSame = 1;
+        }
+        break;
+      }
+    }
+
+    prevPositionList.splice(index, isSame, newPosition);
     this.setState({ position1: prevPositionList });
   }
 
   // 자식 컴포넌트(Draggable)에서 값 받아오기
   onSearchSubmit = (_x, _y) => {
     console.log("get submit in draggable: " + Math.round(_x) + ", " + Math.round(_y));
-    this.pos = {x: Math.round(_x), y: Math.round(_y)};
-    console.log("pos: " + this.pos);
+    this.setState({pos: {x: Math.round(_x), y: Math.round(_y)}});
+    console.log("pos: " + this.state.pos);
   }
 
   // 자식 컴포넌트(Musicbar)에서 값 받아오기
   onSearchSubmitInMusicbar = (_time) => {
     console.log("get submit in musicbar: " + _time);
-    this.time = _time;
+    this.setState({time: _time});
   }
 
   render() {
+    console.log(this.TAG + "render");
     return (
       <View style={styles.columnContainer}>
         <View style={styles.rowContainer}>
@@ -56,7 +71,16 @@ class FormationScreen extends React.Component {
           <TouchableOpacity onPress={this._addPosition}>
             <Text>add</Text>
           </TouchableOpacity>
+          <FlatList
+          style={{backgroundColor: 'yellow', width: 80, flex: 1}}
+          data={this.state.position1}
+          renderItem={({item}) => {
+            return (
+              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {item.posx}, {item.posy}</Text>)
+          }}
+          keyExtractor={(item, index) => index.toString()}/>
         </View>
+        <Text>{Math.round(this.state.time)}: {this.state.pos.x}, {this.state.pos.y}</Text>
       </View>
     );
   }
@@ -76,7 +100,7 @@ const styles = StyleSheet.create({
   },
   formationScreen: {
     backgroundColor: 'pink',
-    flex: 1,
+    flex: 6,
   }
 });
 

@@ -137,45 +137,36 @@ class Musicbar extends React.Component{
     const durationString = this.getAudioTimeString(this.state.duration);
 
     return (
-      <View style={styles.container}>
-        <View style={styles.musicbarContainer}>
-          <Text style={{color:'white'}}>{currentTimeString}</Text>
-          <Slider
-            style={styles.slider}
-            onTouchStart={this.onSliderEditStart}
-            onTouchEnd={this.onSliderEditEnd}
-            onValueChange={this.onSliderEditing}
-            value={this.state.playSeconds} 
-            maximumValue={this.state.duration} 
-            maximumTrackTintColor='gray' 
-            minimumTrackTintColor='white' 
-            thumbTintColor='white'
-            />
-          <Text style={{color:'white'}}>{durationString}</Text>
-          {this.state.playState == 'playing' && 
-          <TouchableOpacity onPress={this.pause} style={styles.button}>
-            <Image source={img_pause} style={styles.button}/>
-          </TouchableOpacity>}
-          {this.state.playState == 'paused' && 
-          <TouchableOpacity onPress={this.play} style={styles.button}>
-            <Image source={img_play} style={{width:20, height:20}}/>
-          </TouchableOpacity>}
-          <TouchableOpacity onPress={this.jumpPrev3Seconds} style={{justifyContent:'center'}}>
-            <Image source={img_playjumpleft} style={styles.button}/>
-            <Text style={styles.buttonText}>3</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.jumpNext3Seconds} style={{justifyContent:'center'}}>
-            <Image source={img_playjumpright} style={styles.button}/>
-            <Text style={styles.buttonText}>3</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{backgroundColor:'red'}}>
-          <TouchableOpacity onPress={this.showBookMark}>
-            <Text>move1</Text>
-          </TouchableOpacity>
-          <Text>{this.state.timemark}</Text>
-        </View>
+      <View style={styles.musicbarContainer}>
+        <Text style={{color:'white'}}>{currentTimeString}</Text>
+        <Slider
+          style={styles.slider}
+          onTouchStart={this.onSliderEditStart}
+          onTouchEnd={this.onSliderEditEnd}
+          onValueChange={this.onSliderEditing}
+          value={this.state.playSeconds} 
+          maximumValue={this.state.duration} 
+          maximumTrackTintColor='gray' 
+          minimumTrackTintColor='white' 
+          thumbTintColor='white'
+          />
+        <Text style={{color:'white'}}>{durationString}</Text>
+        {this.state.playState == 'playing' && 
+        <TouchableOpacity onPress={this.pause} style={styles.button}>
+          <Image source={img_pause} style={styles.button}/>
+        </TouchableOpacity>}
+        {this.state.playState == 'paused' && 
+        <TouchableOpacity onPress={this.play} style={styles.button}>
+          <Image source={img_play} style={{width:20, height:20}}/>
+        </TouchableOpacity>}
+        <TouchableOpacity onPress={this.jumpPrev3Seconds} style={{justifyContent:'center'}}>
+          <Image source={img_playjumpleft} style={styles.button}/>
+          <Text style={styles.buttonText}>3</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.jumpNext3Seconds} style={{justifyContent:'center'}}>
+          <Image source={img_playjumpright} style={styles.button}/>
+          <Text style={styles.buttonText}>3</Text>
+        </TouchableOpacity>
       </View>
     )
   }
