@@ -47,9 +47,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center'
   },
-  choreo: {
-
-  }
 })
 
 export default ChoreoItem

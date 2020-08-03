@@ -113,6 +113,7 @@ class Musicbar extends React.Component{
         else if(nextSecs > this.state.duration) nextSecs = this.state.duration;
         this.sound.setCurrentTime(nextSecs);
         this.setState({playSeconds:nextSecs});
+        this.props.onSearchSubmit(this.state.playSeconds);
       })
     }
   }

@@ -30,7 +30,7 @@ export default class Draggable extends Component {
 
       // 터치이벤트 발생할 때
       onPanResponderGrant: (e, gesture) => {
-        console.log(this.TAG + "onPanResponderGrant");
+        console.log(this.TAG + "onPanResponderGrant/터치이벤트 발생");
         console.log(this.TAG + "_val: " + Math.round(this._val.x) + ", " + Math.round(this._val.y));
 
         this.state.pan.setOffset({
@@ -43,7 +43,7 @@ export default class Draggable extends Component {
 
       // 터치이벤트 끝날 때.
       onPanResponderRelease: (e) => {
-        console.log(this.TAG + "onPanResponderRelease");
+        console.log(this.TAG + "onPanResponderRelease/터치 끝");
         // 부모 컴포넌트로 값 보내기
         this.props.onSearchSubmit(this._val.x, this._val.y);
       }
@@ -86,16 +86,30 @@ export default class Draggable extends Component {
         break;
       }
     }
-    return({x:this.props.position[i-1].posx, y: this.props.position[i-1].posy})
+    console.log("i: "+ i);
+    if(i == this.props.position.length) {
+      return({x: this.props.position[i-1].posx, y: this.props.position[i-1].posy});}
+    
+    const dx = (this.props.position[i].posx - this.props.position[i-1].posx) * (this.props.curTime - this.props.position[i-1].time) / (this.props.position[i].time - this.props.position[i-1].time);
+    const dy = (this.props.position[i].posy - this.props.position[i-1].posy) * (this.props.curTime - this.props.position[i-1].time) / (this.props.position[i].time - this.props.position[i-1].time);
+
+    console.log("dx: "+ dx + ", dy: " + dy);
+
+    return({x: this.props.position[i-1].posx + dx, y: this.props.position[i-1].posy + dy})
   }
 
   render() {
     console.log(this.TAG + "render");
+    console.log(this.TAG + "_val: " + Math.round(this._val.x) +", "+Math.round(this._val.y));
     console.log(this.TAG + "getCurPosition: " + this.getCurPosition().x +", "+this.getCurPosition().y);
-    //this.state.pan.setValue(this.getCurPosition())
     
+    this.state.pan.setOffset({x: 0, y: 0})
+    this.state.pan.setValue(this.getCurPosition())
+    
+    //this.state.pan.setValue({x:0, y:0})
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
+    //const panStyle = { transform: [{translateX: this.getCurPosition().translateX}, {translateY: this.getCurPosition().translateY}] }
 
     return (
       <Animated.View

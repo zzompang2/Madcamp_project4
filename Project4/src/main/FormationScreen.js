@@ -22,12 +22,15 @@ class FormationScreen extends React.Component {
         {posx: 150, posy:150, time: 50},
       ],
       time: 0,
-      pos: {x: 0, y: 0},
+      //pos: {x: 0, y: 0},
     }
+    this.pos = {x: 0, y: 0};
     this.TAG = "FormationScreen/";
   }
 
   _addPosition(_x, _y) {
+    console.log(this.TAG + "_addPosition");
+
     var prevPositionList = [...this.state.position1];
     const curTime = Math.round(this.state.time);
     const newPosition = {posx: _x, posy: _y, time: curTime};
@@ -43,16 +46,18 @@ class FormationScreen extends React.Component {
         break;
       }
     }
-
     prevPositionList.splice(index, isSame, newPosition);
     this.setState({ position1: prevPositionList });
   }
 
   // 자식 컴포넌트(Draggable)에서 값 받아오기
   onSearchSubmit = (_x, _y) => {
+    console.log(this.TAG + "onSearchSubmit");
+
     console.log("get submit in draggable: " + Math.round(_x) + ", " + Math.round(_y));
+    this.pos = {x: Math.round(_x), y: Math.round(_y)};
     this._addPosition(Math.round(_x), Math.round(_y));
-    this.setState({pos: {x: Math.round(_x), y: Math.round(_y)}});
+    //this.setState({pos: {x: Math.round(_x), y: Math.round(_y)}});
   }
 
   // 자식 컴포넌트(Musicbar)에서 값 받아오기
@@ -80,7 +85,7 @@ class FormationScreen extends React.Component {
           }}
           keyExtractor={(item, index) => index.toString()}/>
         </View>
-        <Text>{Math.round(this.state.time)}: {this.state.pos.x}, {this.state.pos.y}</Text>
+        <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
       </View>
     );
   }
