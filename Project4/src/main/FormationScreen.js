@@ -15,11 +15,11 @@ class FormationScreen extends React.Component {
     this.state = {
       position1: [
         {posx: 50, posy:0, time: 0},
-        {posx: 50, posy:50, time: 10},
-        {posx: 100, posy:50, time: 20},
-        {posx: 100, posy:100, time: 30},
-        {posx: 150, posy:100, time: 40},
-        {posx: 150, posy:150, time: 50},
+        {posx: 50, posy:50, time: 4},
+        {posx: 100, posy:50, time: 8},
+        {posx: 100, posy:100, time: 10},
+        {posx: 150, posy:100, time: 12},
+        {posx: 150, posy:150, time: 15},
       ],
       time: 0,
       animationPlayToggle: false,
@@ -54,16 +54,16 @@ class FormationScreen extends React.Component {
   onSearchSubmit = (_x, _y) => {
     console.log(this.TAG + "onSearchSubmit");
 
-    console.log("get submit in draggable: " + Math.round(_x) + ", " + Math.round(_y));
-    this.pos = {x: Math.round(_x), y: Math.round(_y)};
-    this._addPosition(Math.round(_x), Math.round(_y));
+    console.log(this.TAG + "놓은 위치: " + Math.round(_x) + ", " + Math.round(_y));
+    this.pos = {x: _x, y: _y};
+    this._addPosition(_x, _y);
     //this.setState({pos: {x: Math.round(_x), y: Math.round(_y)}});
   }
 
   // 자식 컴포넌트(Musicbar)에서 값 받아오기
   onSearchSubmitInMusicbar = (_time) => {
     console.log("get submit in musicbar: " + _time);
-    this.setState({time: _time});
+    this.setState({time: Math.round(_time)});
   }
 
   playAnimation = (isPlay) => {
@@ -91,7 +91,7 @@ class FormationScreen extends React.Component {
           data={this.state.position1}
           renderItem={({item}) => {
             return (
-              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {item.posx}, {item.posy}</Text>
+              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {Math.round(item.posx)}, {Math.round(item.posy)}</Text>
             )
           }}
           keyExtractor={(item, index) => index.toString()}/>
