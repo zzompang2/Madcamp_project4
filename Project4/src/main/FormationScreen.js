@@ -15,25 +15,11 @@ class FormationScreen extends React.Component {
     this.state = {
       positionList: [
         [
-          {posx: 10, posy:0, time: 0},
-          {posx: 50, posy:50, time: 4},
-          {posx: 100, posy:50, time: 8},
-          {posx: 100, posy:100, time: 10},
-          {posx: 150, posy:100, time: 12},
-          {posx: 150, posy:150, time: 15},
-        ],
-        [
-          {posx: 300, posy:0, time: 0},
-          {posx: 250, posy:50, time: 4},
-          {posx: 200, posy:50, time: 8},
-          {posx: 200, posy:100, time: 10},
-          {posx: 250, posy:100, time: 12},
-          {posx: 250, posy:150, time: 15},
+          {posx: 0, posy:0, time: 0},
         ],
       ],
       time: 0,
       animationPlayToggle: false,
-      numOfDraggable: 2,
     }
     this.pos = {x: 0, y: 0};
     this.TAG = "FormationScreen/";
@@ -85,7 +71,7 @@ class FormationScreen extends React.Component {
   }
 
   addDraggable = () => {
-    const index = this.state.numOfDraggable;
+    const index = this.state.positionList.length;
     var prevPositionList = [...this.state.positionList];
     const curTime = Math.round(this.state.time);
     const newPosition = [{posx: 0, posy: 0, time: curTime}];
@@ -95,7 +81,6 @@ class FormationScreen extends React.Component {
     this.setState(
       {
         positionList: prevPositionList,
-        numOfDraggable: index+1
       }
     );
   }
@@ -103,14 +88,15 @@ class FormationScreen extends React.Component {
   render() {
     console.log(this.TAG + "render");
     var draggables = [];
-    for(var i=0; i<this.state.numOfDraggable; i++){
+    for(var i=0; i<this.state.positionList.length; i++){
       draggables.push(
+        <View style={{position: 'absolute', top:0, left:0}}>
         <Draggable 
         number={i+1} 
         position={this.state.positionList[i]} 
         onSearchSubmit={this.onSearchSubmit} 
         curTime={this.state.time} 
-        toggle={this.state.animationPlayToggle}/>
+        toggle={this.state.animationPlayToggle}/></View>
       )
     }
 

@@ -154,7 +154,7 @@ export default class Draggable extends Component {
   }
 }
 
-let CIRCLE_RADIUS = 30;
+let CIRCLE_RADIUS = 20;
 let styles = StyleSheet.create({
   // 모양 정의를 위한 스타일
   circle: {
@@ -164,11 +164,11 @@ let styles = StyleSheet.create({
     borderRadius: CIRCLE_RADIUS,
   },
   number: {
-    fontSize: 30,
+    fontSize: 20,
     // justifyContent: 'center',
     // alignItems: 'center',
-    marginLeft: 21,
-    marginTop: 8,
+    marginLeft: 14,
+    marginTop: 5,
     // backgroundColor: 'red'
   }
 });
