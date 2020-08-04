@@ -50,7 +50,7 @@ export default class Draggable extends Component {
         this._val = {x: this._prevVal.x+gesture.dx, y: this._prevVal.y+gesture.dy};
 
         // 부모 컴포넌트로 값 보내기
-        this.props.onSearchSubmit(this._val.x, this._val.y);
+        this.props.onSearchSubmit(this.props.number-1, this._val.x, this._val.y);
         this.state.pan.setOffset({x: 0, y: 0});
         //this.state.pan.flattenOffset();
       }

@@ -14,12 +14,22 @@ class FormationScreen extends React.Component {
     super();
     this.state = {
       position1: [
-        {posx: 50, posy:0, time: 0},
-        {posx: 50, posy:50, time: 4},
-        {posx: 100, posy:50, time: 8},
-        {posx: 100, posy:100, time: 10},
-        {posx: 150, posy:100, time: 12},
-        {posx: 150, posy:150, time: 15},
+        [
+          {posx: 50, posy:0, time: 0},
+          {posx: 50, posy:50, time: 4},
+          {posx: 100, posy:50, time: 8},
+          {posx: 100, posy:100, time: 10},
+          {posx: 150, posy:100, time: 12},
+          {posx: 150, posy:150, time: 15},
+        ],
+        [
+          {posx: 300, posy:0, time: 0},
+          {posx: 250, posy:50, time: 4},
+          {posx: 200, posy:50, time: 8},
+          {posx: 200, posy:100, time: 10},
+          {posx: 250, posy:100, time: 12},
+          {posx: 250, posy:150, time: 15},
+        ],
       ],
       time: 0,
       animationPlayToggle: false,
@@ -28,35 +38,37 @@ class FormationScreen extends React.Component {
     this.TAG = "FormationScreen/";
   }
 
-  _addPosition(_x, _y) {
+  _addPosition(index, _x, _y) {
     console.log(this.TAG + "_addPosition");
 
     var prevPositionList = [...this.state.position1];
+    var prevPositionListi = [...this.state.position1[index]];
     const curTime = Math.round(this.state.time);
     const newPosition = {posx: _x, posy: _y, time: curTime};
 
-    var index = 0;
+    var i = 0;
     var isSame = 0;
-    for(index=0; index<prevPositionList.length; index++){
-      if(curTime <= prevPositionList[index].time){
+    for(i=0; i<prevPositionListi.length; i++){
+      if(curTime <= prevPositionListi[i].time){
         // 같은 시간에 다른 값이 있으면 대체
-        if(curTime == prevPositionList[index].time){
+        if(curTime == prevPositionListi[i].time){
           isSame = 1;
         }
         break;
       }
     }
-    prevPositionList.splice(index, isSame, newPosition);
+    prevPositionListi.splice(i, isSame, newPosition);
+    prevPositionList.splice(index, 1, prevPositionListi);
     this.setState({ position1: prevPositionList });
   }
 
   // 자식 컴포넌트(Draggable)에서 값 받아오기
-  onSearchSubmit = (_x, _y) => {
+  onSearchSubmit = (index, _x, _y) => {
     console.log(this.TAG + "onSearchSubmit");
 
     console.log(this.TAG + "놓은 위치: " + Math.round(_x) + ", " + Math.round(_y));
     this.pos = {x: _x, y: _y};
-    this._addPosition(_x, _y);
+    this._addPosition(index, _x, _y);
     //this.setState({pos: {x: Math.round(_x), y: Math.round(_y)}});
   }
 
@@ -80,7 +92,13 @@ class FormationScreen extends React.Component {
           <View style={styles.formationScreen}>
             <Draggable 
             number='1' 
-            position={this.state.position1} 
+            position={this.state.position1[0]} 
+            onSearchSubmit={this.onSearchSubmit} 
+            curTime={this.state.time} 
+            toggle={this.state.animationPlayToggle}/>
+            <Draggable 
+            number='2' 
+            position={this.state.position1[1]} 
             onSearchSubmit={this.onSearchSubmit} 
             curTime={this.state.time} 
             toggle={this.state.animationPlayToggle}/>
