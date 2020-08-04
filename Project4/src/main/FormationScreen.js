@@ -13,9 +13,9 @@ class FormationScreen extends React.Component {
   constructor(){
     super();
     this.state = {
-      position1: [
+      positionList: [
         [
-          {posx: 50, posy:0, time: 0},
+          {posx: 10, posy:0, time: 0},
           {posx: 50, posy:50, time: 4},
           {posx: 100, posy:50, time: 8},
           {posx: 100, posy:100, time: 10},
@@ -33,6 +33,7 @@ class FormationScreen extends React.Component {
       ],
       time: 0,
       animationPlayToggle: false,
+      numOfDraggable: 2,
     }
     this.pos = {x: 0, y: 0};
     this.TAG = "FormationScreen/";
@@ -41,25 +42,25 @@ class FormationScreen extends React.Component {
   _addPosition(index, _x, _y) {
     console.log(this.TAG + "_addPosition");
 
-    var prevPositionList = [...this.state.position1];
-    var prevPositionListi = [...this.state.position1[index]];
+    var prevPositionList = [...this.state.positionList];
+    var prevPosition_i = [...this.state.positionList[index]];
     const curTime = Math.round(this.state.time);
     const newPosition = {posx: _x, posy: _y, time: curTime};
 
     var i = 0;
     var isSame = 0;
-    for(i=0; i<prevPositionListi.length; i++){
-      if(curTime <= prevPositionListi[i].time){
+    for(i=0; i<prevPosition_i.length; i++){
+      if(curTime <= prevPosition_i[i].time){
         // 같은 시간에 다른 값이 있으면 대체
-        if(curTime == prevPositionListi[i].time){
+        if(curTime == prevPosition_i[i].time){
           isSame = 1;
         }
         break;
       }
     }
-    prevPositionListi.splice(i, isSame, newPosition);
-    prevPositionList.splice(index, 1, prevPositionListi);
-    this.setState({ position1: prevPositionList });
+    prevPosition_i.splice(i, isSame, newPosition);
+    prevPositionList.splice(index, 1, prevPosition_i);
+    this.setState({ positionList: prevPositionList });
   }
 
   // 자식 컴포넌트(Draggable)에서 값 받아오기
@@ -83,30 +84,56 @@ class FormationScreen extends React.Component {
     this.setState({animationPlayToggle: isPlay});
   }
 
+  addDraggable = () => {
+    const index = this.state.numOfDraggable;
+    var prevPositionList = [...this.state.positionList];
+    const curTime = Math.round(this.state.time);
+    const newPosition = [{posx: 0, posy: 0, time: curTime}];
+
+    prevPositionList.splice(index, 0, newPosition);
+
+    this.setState(
+      {
+        positionList: prevPositionList,
+        numOfDraggable: index+1
+      }
+    );
+  }
+
   render() {
     console.log(this.TAG + "render");
+    var draggables = [];
+    for(var i=0; i<this.state.numOfDraggable; i++){
+      draggables.push(
+        <Draggable 
+        number={i+1} 
+        position={this.state.positionList[i]} 
+        onSearchSubmit={this.onSearchSubmit} 
+        curTime={this.state.time} 
+        toggle={this.state.animationPlayToggle}/>
+      )
+    }
+
     return (
       <View style={styles.columnContainer}>
         <View style={styles.rowContainer}>
           <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation}/>
           <View style={styles.formationScreen}>
-            <Draggable 
-            number='1' 
-            position={this.state.position1[0]} 
-            onSearchSubmit={this.onSearchSubmit} 
-            curTime={this.state.time} 
-            toggle={this.state.animationPlayToggle}/>
-            <Draggable 
-            number='2' 
-            position={this.state.position1[1]} 
-            onSearchSubmit={this.onSearchSubmit} 
-            curTime={this.state.time} 
-            toggle={this.state.animationPlayToggle}/>
+            {draggables}
           </View>
 
           <FlatList
           style={{backgroundColor: 'yellow', width: 80, flex: 1}}
-          data={this.state.position1}
+          data={this.state.positionList[0]}
+          renderItem={({item}) => {
+            return (
+              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {Math.round(item.posx)}, {Math.round(item.posy)}</Text>
+            )
+          }}
+          keyExtractor={(item, index) => index.toString()}/>
+          <FlatList
+          style={{backgroundColor: 'blue', width: 80, flex: 1}}
+          data={this.state.positionList[1]}
           renderItem={({item}) => {
             return (
               <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {Math.round(item.posx)}, {Math.round(item.posy)}</Text>
@@ -116,6 +143,9 @@ class FormationScreen extends React.Component {
         </View>
         <View style={{flexDirection:'row', backgroundColor: 'gray', justifyContent:'space-between'}}>
           <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
+          <TouchableOpacity onPress={this.addDraggable}>
+            <Text>add new dancer</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
