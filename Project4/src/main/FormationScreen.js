@@ -8,6 +8,7 @@ import Draggable from '../components/Draggable';
 import { TextInput } from 'react-native-gesture-handler';
 // import Position from '../components/Position';
 import Musicbar from '../components/Musicbar';
+import {COLORS} from '../values/colors';
 
 class FormationScreen extends React.Component {
   constructor(){
@@ -73,8 +74,7 @@ class FormationScreen extends React.Component {
   addDraggable = () => {
     const index = this.state.positionList.length;
     var prevPositionList = [...this.state.positionList];
-    const curTime = Math.round(this.state.time);
-    const newPosition = [{posx: 0, posy: 0, time: curTime}];
+    const newPosition = [{posx: 0, posy: 0, time: 0}];
 
     prevPositionList.splice(index, 0, newPosition);
 
@@ -108,7 +108,7 @@ class FormationScreen extends React.Component {
             {draggables}
           </View>
 
-          <FlatList
+          {/* <FlatList
           style={{backgroundColor: 'yellow', width: 80, flex: 1}}
           data={this.state.positionList[0]}
           renderItem={({item}) => {
@@ -125,7 +125,8 @@ class FormationScreen extends React.Component {
               <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {Math.round(item.posx)}, {Math.round(item.posy)}</Text>
             )
           }}
-          keyExtractor={(item, index) => index.toString()}/>
+          keyExtractor={(item, index) => index.toString()}/> */}
+
         </View>
         <View style={{flexDirection:'row', backgroundColor: 'gray', justifyContent:'space-between'}}>
           <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>

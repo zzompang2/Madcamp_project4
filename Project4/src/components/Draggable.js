@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Text,StyleSheet,PanResponder,Animated } from "react-native";
+import {COLORS} from '../values/colors';
 
 export default class Draggable extends Component {
   constructor(props) {

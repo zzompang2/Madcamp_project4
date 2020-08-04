@@ -5,6 +5,7 @@ import {
 
 import Sound from 'react-native-sound';
 import Slider from '@react-native-community/slider';
+import {COLORS} from '../values/colors';
 
 //음악재생image 설정
 const img_pause = require('../../asset/ui_pause.png');
@@ -184,18 +185,12 @@ class Musicbar extends React.Component{
 }
 
 const styles = StyleSheet.create({
-  container : {
-    //justifyContent:'center', 
-    backgroundColor:'black', 
-    flexDirection:'row',
-    //flex: 1,
-  },
   musicbarContainer : {
     //marginVertical:15, 
     //marginHorizontal:15, 
     padding: 5,
     flexDirection:'column', 
-    backgroundColor:'blue',
+    backgroundColor: COLORS.black,
     //flex: 1,
     alignItems: 'center',
     width: 50,

@@ -1,5 +1,6 @@
 import React from "react";
 import {StyleSheet, Text, View, Image, ListView, TextInput, TouchableOpacity} from "react-native";
+import {COLORS} from '../values/colors';
 
 const ChoreoItem = ({lyrics, formation, choreo}) =>  (
   <View style={styles.container}>
