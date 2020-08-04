@@ -27,7 +27,7 @@ class Musicbar extends React.Component{
   }
 
   componentDidMount(){
-    this.play();  // 뮤직 플레이!
+    //this.play();  // 뮤직 플레이!
     
     this.timeout = setInterval(() => {
       if(this.sound && this.sound.isLoaded() && this.state.playState == 'playing' && !this.sliderEditing){
@@ -110,6 +110,7 @@ class Musicbar extends React.Component{
     // 애니메이션 실행을 위해 전달.
     if(this.props.playAnimation != undefined)
       this.props.playAnimation(false);
+    this.props.onSearchSubmit(this.state.playSeconds);
   }
 
   jumpPrev3Seconds = () => {this.jumpSeconds(-3);}

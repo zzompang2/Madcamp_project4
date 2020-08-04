@@ -71,10 +71,6 @@ class FormationScreen extends React.Component {
     this.setState({animationPlayToggle: isPlay});
   }
 
-  stopAnimation = () => {
-    this.setState({animationPlayToggle: false});
-  }
-
   render() {
     console.log(this.TAG + "render");
     return (
@@ -102,12 +98,6 @@ class FormationScreen extends React.Component {
         </View>
         <View style={{flexDirection:'row', backgroundColor: 'gray', justifyContent:'space-between'}}>
           <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
-          <TouchableOpacity onPress={this.playAnimation}>
-            <Text>Play</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.stopAnimation}>
-            <Text>Stop</Text>
-          </TouchableOpacity>
         </View>
       </View>
     );

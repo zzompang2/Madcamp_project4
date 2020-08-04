@@ -10,7 +10,7 @@ export default class Draggable extends Component {
     };
     this._val = { x:0, y:0 };
     this.state.pan.addListener((value) => this._val = value);
-    // Initialize PanResponder with move handling
+    /** Initialize PanResponder with move handling **/
     this.panResponder = PanResponder.create({
       // 주어진 터치 이벤트에 반응할지를 결정
       onStartShouldSetPanResponder: (e, gesture) => true,
@@ -35,47 +35,19 @@ export default class Draggable extends Component {
         x: this._val.x,
         y: this._val.y,
         })
-        //this.state.pan.setValue({x:0, y:0});
+        this.state.pan.setValue({x:0, y:0});
         //this.onChange();
       },
 
       // 터치이벤트 끝날 때.
       onPanResponderRelease: (e) => {
         console.log(this.TAG + "onPanResponderRelease/터치 끝");
+        this.state.pan.flattenOffset();
         // 부모 컴포넌트로 값 보내기
         this.props.onSearchSubmit(this._val.x, this._val.y);
       }
     });
-
     this.TAG = "Draggable/";
-  }
-
-  playAnimation() {
-    console.log(this.TAG + "playAnimation: " + this.props.position)
-    var transformList = [];
-
-    transformList.push( 
-      Animated.timing(
-        this.state.pan,
-        {
-          toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
-          duration: 1,
-          useNativeDriver: true,
-        }
-    ));
-
-    for(var i=1; i<this.props.position.length; i++){
-      transformList.push( 
-        Animated.timing(
-          this.state.pan,
-          {
-            toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
-            duration: (this.props.position[i].time - this.props.position[i-1].time) * 1000,
-            useNativeDriver: true,
-          }
-      ));
-    }
-    Animated.sequence(transformList).start();
   }
 
   getCurPosition() {
@@ -98,8 +70,9 @@ export default class Draggable extends Component {
     console.log(this.TAG + "_val: " + Math.round(this._val.x) +", "+Math.round(this._val.y));
     console.log(this.TAG + "getCurPosition: " + this.getCurPosition().x +", "+this.getCurPosition().y);
     
-    this.state.pan.setOffset({x: 0, y: 0})
+    //this.state.pan.setOffset({x: 0, y: 0})
     this.state.pan.setValue(this.getCurPosition())
+    this._val = {x: this.getCurPosition().x, y: this.getCurPosition().y}
     
     // 위치를 지정할 스타일
     const panStyle = { transform: this.state.pan.getTranslateTransform() }
@@ -117,23 +90,41 @@ export default class Draggable extends Component {
     if(this.props.toggle) {
       var transformList = [];
 
+      // 시작 시간에 맞춰 애니메이션을 실행하기 위해
+      // 현재 시간이 어디 사이에 있는지 찾는다.
+      for(var i=0; i<this.props.position.length; i++){
+        if(this.props.curTime < this.props.position[i].time){
+          break;
+        }
+      }
+
       transformList.push( 
         Animated.timing(
           this.state.pan,
           {
-            toValue: {x:this.props.position[0].posx, y:this.props.position[0].posy},
+            toValue: {x:this._val.x, y:this._val.y},
             duration: 1,
             useNativeDriver: true,
           }
       ));
 
-      for(var i=1; i<this.props.position.length; i++){
+      transformList.push( 
+        Animated.timing(
+          this.state.pan,
+          {
+            toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
+            duration: (this.props.position[i].time - this.props.curTime) * 1000,
+            useNativeDriver: true,
+          }
+      ));
+
+      for(var j=i+1; j<this.props.position.length; j++){
         transformList.push( 
           Animated.timing(
             this.state.pan,
             {
-              toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
-              duration: (this.props.position[i].time - this.props.position[i-1].time) * 1000,
+              toValue: {x:this.props.position[j].posx, y:this.props.position[j].posy},
+              duration: (this.props.position[j].time - this.props.position[j-1].time) * 1000,
               useNativeDriver: true,
             }
         ));
