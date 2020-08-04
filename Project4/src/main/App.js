@@ -28,12 +28,12 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: COLORS.blackDark },
+        headerStyle: { backgroundColor: COLORS.blackDark, height: 40},
         headerTintColor: COLORS.yellow,
         headerTitleAlign: 'center',
       }}>
         <Stack.Screen name="choreo note" component={MainScreen}/>
-        <Stack.Screen name="undefined" component={ChoreoScreen} />
+        <Stack.Screen name="choreo" component={ChoreoScreen} />
         <Stack.Screen name="formation" component={FormationScreen} />
     </Stack.Navigator>
     </NavigationContainer>

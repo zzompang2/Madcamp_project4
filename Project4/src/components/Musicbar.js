@@ -190,14 +190,13 @@ const styles = StyleSheet.create({
     //marginHorizontal:15, 
     padding: 5,
     flexDirection:'column', 
-    backgroundColor: COLORS.black,
+    backgroundColor: COLORS.blackDark,
     //flex: 1,
     alignItems: 'center',
     width: 50,
   },
   button: {
     marginVertical: 3,
-    //backgroundColor: "pink",
     width:20, 
     height:20,
   },
@@ -214,7 +213,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: 220, 
     height: 20,
-    //backgroundColor: 'purple',
   },
 });
 

@@ -101,9 +101,9 @@ class FormationScreen extends React.Component {
     }
 
     return (
-      <View style={styles.columnContainer}>
-        <View style={styles.rowContainer}>
-          <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation}/>
+      <View style={styles.rowContainer}>
+        <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation}/>
+        <View style={styles.columnContainer}>
           <View style={styles.formationScreen}>
             {draggables}
           </View>
@@ -126,13 +126,13 @@ class FormationScreen extends React.Component {
             )
           }}
           keyExtractor={(item, index) => index.toString()}/> */}
-
-        </View>
-        <View style={{flexDirection:'row', backgroundColor: 'gray', justifyContent:'space-between'}}>
-          <Text>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
-          <TouchableOpacity onPress={this.addDraggable}>
-            <Text>add new dancer</Text>
-          </TouchableOpacity>
+          
+          <View style={{flexDirection:'row', backgroundColor: COLORS.grayDark, justifyContent:'space-between'}}>
+            <Text style={{color: COLORS.white}}>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
+            <TouchableOpacity onPress={this.addDraggable}>
+              <Text style={{color: COLORS.white}}>add new dancer</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -143,17 +143,14 @@ const styles = StyleSheet.create({
   columnContainer : {
     flexDirection:'column',
     flex: 1,
-    //justifyContent: 'space-between'
   },
   rowContainer : {
     flexDirection:'row',
     flex: 1,
-    backgroundColor: 'gray',
-    //justifyContent: 'space-between'
   },
   formationScreen: {
-    backgroundColor: 'pink',
-    flex: 6,
+    backgroundColor: COLORS.white,
+    flex: 1,
   }
 });
 
