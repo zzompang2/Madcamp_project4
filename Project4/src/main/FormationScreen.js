@@ -9,17 +9,14 @@ import { TextInput } from 'react-native-gesture-handler';
 // import Position from '../components/Position';
 import Musicbar from '../components/Musicbar';
 import {COLORS} from '../values/Colors';
+import { useBackButton } from '@react-navigation/native';
 
 class FormationScreen extends React.Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
-      positionList: [
-        [
-          {posx: 0, posy:0, time: 0},
-        ],
-      ],
-      time: 0,
+      positionList: this.props.route.params.positionList,
+      time: this.props.route.params.time,
       animationPlayToggle: false,
     }
     this.pos = {x: 0, y: 0};
@@ -63,7 +60,7 @@ class FormationScreen extends React.Component {
   // 자식 컴포넌트(Musicbar)에서 값 받아오기
   onSearchSubmitInMusicbar = (_time) => {
     console.log("get submit in musicbar: " + _time);
-    this.setState({time: Math.round(_time)});
+    this.setState({time: _time});
   }
 
   playAnimation = (isPlay) => {
@@ -87,6 +84,7 @@ class FormationScreen extends React.Component {
 
   render() {
     console.log(this.TAG + "render");
+    
     var draggables = [];
     for(var i=0; i<this.state.positionList.length; i++){
       draggables.push(
@@ -102,39 +100,24 @@ class FormationScreen extends React.Component {
       )
     }
 
+    console.log(this.TAG + "current time2: " + this.state.time + "\n\n");
+
     return (
       <View style={styles.rowContainer}>
-        <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation}/>
+        <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation} time={this.state.time}/>
         <View style={styles.columnContainer}>
           <View style={styles.formationScreen}>
             <Image source={require('../../assets/drawable/background_formation.png')}
             style={{resizeMode: 'repeat'}}></Image>
             {draggables}
           </View>
-          
-          {/* <FlatList
-          style={{backgroundColor: 'yellow', width: 80, flex: 1}}
-          data={this.state.positionList[0]}
-          renderItem={({item}) => {
-            return (
-              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {Math.round(item.posx)}, {Math.round(item.posy)}</Text>
-            )
-          }}
-          keyExtractor={(item, index) => index.toString()}/>
-          <FlatList
-          style={{backgroundColor: 'blue', width: 80, flex: 1}}
-          data={this.state.positionList[1]}
-          renderItem={({item}) => {
-            return (
-              <Text style={{width:80, color:'black', fontSize:10, backgroundColor:'white'}}>{item.time}: {Math.round(item.posx)}, {Math.round(item.posy)}</Text>
-            )
-          }}
-          keyExtractor={(item, index) => index.toString()}/> */}
-          
           <View style={{flexDirection:'row', justifyContent:'space-between', alignItems: 'baseline'}}>
-            <Text style={{color: COLORS.white}}>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
+            <Text style={{color: COLORS.white, flex: 1}}>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
             <TouchableOpacity onPress={this.addDraggable}>
-              <Image source={require('../../assets/drawable/btn_adddancer.png')} style={styles.addbtn}/>
+              <Image source={require('../../assets/drawable/btn_adddancer.png')} style={styles.button}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo', {time: this.state.time, positionList: this.state.positionList})}>
+              <Image source={require('../../assets/drawable/btn_complete.png')} style={styles.button}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -158,10 +141,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addbtn: {
+  button: {
     width: 50,
     height: 50,
-    margin: 15,
+    marginBottom: 15,
+    marginRight: 15,
   }
 });
 

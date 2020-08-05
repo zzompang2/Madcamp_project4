@@ -21,34 +21,15 @@ class Musicbar extends React.Component{
 
   constructor(props){
     super(props);
+    console.log("Musicbar/constructor")
     this.state = {
       playState: 'paused', //playing, paused
-      playSeconds: 0,
+      playSeconds: this.props.time,
       duration: 0,
       timemark: 'default'
     }
     this.sliderEditing = false;
-  }
-
-  componentDidMount(){
-    //this.play();  // 뮤직 플레이!
-    
-    this.timeout = setInterval(() => {
-      if(this.sound && this.sound.isLoaded() && this.state.playState == 'playing' && !this.sliderEditing){
-        this.sound.getCurrentTime((seconds, isPlaying) => {
-          this.setState({playSeconds:seconds});
-        })
-      }
-    }, 100);
-  }
-  componentWillUnmount(){
-    if(this.sound){
-      this.sound.release();
-      this.sound = null;
-  }
-    if(this.timeout){
-      clearInterval(this.timeout);
-    }
+    this.TAG = 'Musicbar/';
   }
 
   onSliderEditStart = () => {
@@ -67,7 +48,27 @@ class Musicbar extends React.Component{
     }
   }
 
+  load = () => {
+    console.log(this.TAG + "load");
+    //const filepath = this.props.navigation.state.params.filepath;
+    //const filepath = 'file:///Phone/sdcard/Music/madclown.mp3';
+    const filepath = Sound.MAIN_BUNDLE;
+    console.log('[Play]', filepath);
+
+    this.sound = new Sound('madclown.mp3', filepath, (error) => {
+      if (error) {
+        console.log('failed to load the sound', error);
+        Alert.alert('Notice', 'audio file error. (Error code : 1)');
+        this.setState({playState:'paused'});
+      }
+      else{
+        this.setState({playState:'paused', duration:this.sound.getDuration()});
+      }
+    });  
+  }
+
   play = async () => {
+    console.log(this.TAG + "play");
     if(this.sound){
       this.sound.play(this.playComplete);
       this.setState({playState:'playing'});
@@ -75,27 +76,12 @@ class Musicbar extends React.Component{
       if(this.props.playAnimation != undefined)
         this.props.playAnimation(true);
     }else{
-      //const filepath = this.props.navigation.state.params.filepath;
-      //const filepath = 'file:///Phone/sdcard/Music/madclown.mp3';
-      const filepath = Sound.MAIN_BUNDLE;
-      console.log('[Play]', filepath);
-
-      this.sound = new Sound('madclown.mp3',filepath, (error) => {
-        if (error) {
-          console.log('failed to load the sound', error);
-          Alert.alert('Notice', 'audio file error. (Error code : 1)');
-          this.setState({playState:'paused'});
-        }else{
-          this.setState({playState:'playing', duration:this.sound.getDuration()});
-          this.sound.play(this.playComplete);
-          // 애니메이션 실행을 위해 전달.
-          if(this.props.playAnimation != undefined)
-            this.props.playAnimation(true);
-        }
-      });    
+      this.load();
+      this.play();
     }
   }
   playComplete = (success) => {
+    //console.log(this.TAG + "playComplete");
     if(this.sound){
       if (success) {
         console.log('successfully finished playing');
@@ -109,6 +95,7 @@ class Musicbar extends React.Component{
   }
 
   pause = () => {
+    console.log(this.TAG + "pause");
     if(this.sound){
       this.sound.pause();
     }
@@ -154,6 +141,8 @@ class Musicbar extends React.Component{
   }
 
   render(){
+    console.log(this.TAG + "render");
+    console.log(this.TAG + "playSeconds: " + this.state.playSeconds);
 
     const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
     const durationString = this.getAudioTimeString(this.state.duration);
@@ -191,6 +180,32 @@ class Musicbar extends React.Component{
         </TouchableOpacity>
       </View>
     )
+  }
+  componentDidMount(){
+    console.log(this.TAG + "componentDidMount");
+    this.load();
+
+    //console.log(this.TAG + "current time: " + this.props.time);
+    
+    this.timeout = setInterval(() => {
+      if(this.sound && this.sound.isLoaded() && this.state.playState == 'playing' && !this.sliderEditing){
+        this.sound.getCurrentTime((seconds, isPlaying) => {
+          this.setState({playSeconds:seconds});
+        })
+      }
+    }, 100);
+  }
+
+  // 컴포넌트가 DOM 상에서 제거될 때 호출
+  componentWillUnmount(){
+    console.log(this.TAG + "componentWillUnmount");
+    if(this.sound){
+      this.sound.release();
+      this.sound = null;
+  }
+    if(this.timeout){
+      clearInterval(this.timeout);
+    }
   }
 }
 
