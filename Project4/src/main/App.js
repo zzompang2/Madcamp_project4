@@ -6,6 +6,7 @@ import FormationScreen from './FormationScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import firebase from '@react-native-firebase/app';
 
 import {COLORS} from '../values/Colors';
 import { FONTS } from '../values/Fonts';

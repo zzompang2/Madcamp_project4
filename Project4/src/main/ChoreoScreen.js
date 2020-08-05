@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  SafeAreaView, StyleSheet, View, FlatList, TouchableOpacity,
+  SafeAreaView, StyleSheet, View, FlatList, TouchableOpacity,Alert,
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
@@ -26,6 +26,7 @@ export default class ChoreoScreen extends React.Component {
         time: 20,
       }],
       time: 0,
+      playState: 'paused',
     }
     this.positionList = [
       [
@@ -76,7 +77,12 @@ export default class ChoreoScreen extends React.Component {
 
   _makeChoreoItem = ({item, index}) => {
     return (
-      <TouchableOpacity onPress={() => this.props.navigation.navigate('formation', {time: item.time, positionList: this.positionList})}>
+      <TouchableOpacity onPress={() => {
+        if(this.state.playState == 'paused')
+          this.props.navigation.navigate('formation', {time: item.time, positionList: this.positionList})
+        else
+          Alert.alert('Notice', 'Can\'t edit while listening :)');
+      }}>
         <ChoreoItem
         index={index}
         lyrics={item.lyrics} 
@@ -87,9 +93,9 @@ export default class ChoreoScreen extends React.Component {
   }
 
   // 자식 컴포넌트(Musicbar)에서 값 받아오기
-  onSearchSubmitInMusicbar = (_time) => {
+  onSearchSubmitInMusicbar = (_time, _playState) => {
     console.log("get submit in musicbar: " + _time);
-    this.setState({time: _time});
+    this.setState({time: _time, playState: _playState});
   }
 
   render() {

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Text,StyleSheet,PanResponder,Animated } from "react-native";
 import {COLORS} from '../values/Colors';
+import { Easing } from "react-native-reanimated";
 
 export default class Draggable extends Component {
   constructor(props) {
@@ -20,10 +21,10 @@ export default class Draggable extends Component {
 
       // 터치이벤트 발생할 때
       onPanResponderGrant: (e, gesture) => {
-        console.log(this.TAG + "onPanResponderGrant/터치이벤트 발생");
-        console.log(this.TAG + "시작위치(_val): " + Math.round(this._val.x) + ", " + Math.round(this._val.y));
+        //console.log(this.TAG + "onPanResponderGrant/터치이벤트 발생");
+        //console.log(this.TAG + "시작위치(_val): " + Math.round(this._val.x) + ", " + Math.round(this._val.y));
 
-        this._prevVal = {x: Math.round(this._val.x), y: Math.round(this._val.y)}
+        this._prevVal = {x: this._val.x, y: this._val.y}
 
         this.state.pan.setOffset({
         x: this._val.x,
@@ -46,9 +47,9 @@ export default class Draggable extends Component {
 
       // 터치이벤트 끝날 때.
       onPanResponderRelease: (e, gesture) => {
-        console.log(this.TAG + "onPanResponderRelease/터치 끝");
+        //console.log(this.TAG + "onPanResponderRelease/터치 끝");
 
-        this._val = {x: Math.round((this._prevVal.x+gesture.dx)*100)/100, y: Math.round((this._prevVal.y+gesture.dy)*100)/100};
+        this._val = {x: this._prevVal.x+gesture.dx, y: this._prevVal.y+gesture.dy};
 
         // 부모 컴포넌트로 값 보내기
         this.props.onSearchSubmit(this.props.number-1, this._val.x, this._val.y);
@@ -62,7 +63,7 @@ export default class Draggable extends Component {
   getCurPosition() {
     for(var i=0; i<this.props.position.length; i++){
       if(this.props.curTime <= this.props.position[i].time){
-        console.log(this.TAG + "getCurPosition: " + this.props.curTime + " vs. ["+i+"] " + this.props.position[i].time);
+        //console.log(this.TAG + "getCurPosition: " + this.props.curTime + " vs. ["+i+"] " + this.props.position[i].time);
         break;
       }
     }
@@ -75,17 +76,17 @@ export default class Draggable extends Component {
     const dx = (this.props.position[i].posx - this.props.position[i-1].posx) * (this.props.curTime - this.props.position[i-1].time) / (this.props.position[i].time - this.props.position[i-1].time);
     const dy = (this.props.position[i].posy - this.props.position[i-1].posy) * (this.props.curTime - this.props.position[i-1].time) / (this.props.position[i].time - this.props.position[i-1].time);    
     
-    console.log(this.TAG + "dx: " + dx +", dy: "+ dy);
-    console.log(this.TAG + "posx: " + this.props.position[i-1].posx + ", posy: " + this.props.position[i-1].posy);
+    //console.log(this.TAG + "dx: " + dx +", dy: "+ dy);
+    //console.log(this.TAG + "posx: " + this.props.position[i-1].posx + ", posy: " + this.props.position[i-1].posy);
     return({x: this.props.position[i-1].posx + dx, y: this.props.position[i-1].posy + dy})
   }
 
   render() {
-    console.log(this.TAG + "render");
-    console.log(this.TAG + "_val: " + Math.round(this._val.x) +", "+Math.round(this._val.y));
+    //console.log(this.TAG + "render");
+    //console.log(this.TAG + "_val: " + Math.round(this._val.x) +", "+Math.round(this._val.y));
 
     const curPosition = this.getCurPosition();
-    console.log(this.TAG + "getCurPosition: " + curPosition.x +", "+curPosition.y);
+    //console.log(this.TAG + "getCurPosition: " + curPosition.x +", "+curPosition.y);
     
     
     this.state.pan.setValue(curPosition)
@@ -103,9 +104,9 @@ export default class Draggable extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.TAG + "_val: " + Math.round(this._val.x) +", "+Math.round(this._val.y));
+    //console.log(this.TAG + "_val: " + Math.round(this._val.x) +", "+Math.round(this._val.y));
 
-    console.log(this.TAG + "componentDidMount: " + this.props.toggle + "\n\n");
+    //console.log(this.TAG + "componentDidMount: " + this.props.toggle + "\n\n");
     if(this.props.toggle) {
       var transformList = [];
 
@@ -126,6 +127,7 @@ export default class Draggable extends Component {
             toValue: {x:this._val.x, y:this._val.y},
             duration: 1,
             useNativeDriver: true,
+            delay: 0,
           }
       ));
 
@@ -136,6 +138,7 @@ export default class Draggable extends Component {
             toValue: {x:this.props.position[i].posx, y:this.props.position[i].posy},
             duration: (this.props.position[i].time - this.props.curTime) * 1000,
             useNativeDriver: true,
+            delay: 0,
           }
       ));
 
@@ -147,6 +150,7 @@ export default class Draggable extends Component {
               toValue: {x:this.props.position[j].posx, y:this.props.position[j].posy},
               duration: (this.props.position[j].time - this.props.position[j-1].time) * 1000,
               useNativeDriver: true,
+              delay: 0,
             }
         ));
       }

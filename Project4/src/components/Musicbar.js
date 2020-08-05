@@ -53,7 +53,7 @@ class Musicbar extends React.Component{
     //const filepath = this.props.navigation.state.params.filepath;
     //const filepath = 'file:///Phone/sdcard/Music/madclown.mp3';
     const filepath = Sound.MAIN_BUNDLE;
-    console.log('[Play]', filepath);
+    //console.log('[Play]', filepath);
 
     this.sound = new Sound('madclown.mp3', filepath, (error) => {
       if (error) {
@@ -62,6 +62,7 @@ class Musicbar extends React.Component{
         this.setState({playState:'paused'});
       }
       else{
+        this.sound.setCurrentTime(this.props.time);
         this.setState({playState:'paused', duration:this.sound.getDuration()});
       }
     });  
@@ -70,15 +71,20 @@ class Musicbar extends React.Component{
   play = async () => {
     console.log(this.TAG + "play");
     if(this.sound){
+      console.log(this.TAG + "test1");
       this.sound.play(this.playComplete);
       this.setState({playState:'playing'});
       // 애니메이션 실행을 위해 전달.
       if(this.props.playAnimation != undefined)
         this.props.playAnimation(true);
-    }else{
-      this.load();
-      this.play();
+      // 노래 재생 상태를 알리기 위해
+      if(this.props.onSearchSubmit != undefined)
+        this.props.onSearchSubmit(this.state.playSeconds, 'playing');
     }
+    // else{
+    //   this.load();
+    //   this.play();
+    // }
   }
   playComplete = (success) => {
     //console.log(this.TAG + "playComplete");
@@ -103,9 +109,8 @@ class Musicbar extends React.Component{
     // 애니메이션 실행을 위해 전달.
     if(this.props.playAnimation != undefined)
       this.props.playAnimation(false);
-    if(this.props.onSearchSubmit != undefined){
-      this.props.onSearchSubmit(this.state.playSeconds);
-    }
+    if(this.props.onSearchSubmit != undefined)
+      this.props.onSearchSubmit(this.state.playSeconds, 'paused');
   }
 
   jumpPrev3Seconds = () => {this.jumpSeconds(-3);}
@@ -113,6 +118,7 @@ class Musicbar extends React.Component{
   jumpSeconds = (secsDelta) => {
     if(this.sound){
       this.sound.getCurrentTime((secs, isPlaying) => {
+        console.log(this.TAG + "getCurrentTime: " + secs);
         let nextSecs = secs + secsDelta;
         if(nextSecs < 0) nextSecs = 0;
         else if(nextSecs > this.state.duration) nextSecs = this.state.duration;
@@ -120,7 +126,7 @@ class Musicbar extends React.Component{
         this.setState({playSeconds:nextSecs});
         
         if(this.props.onSearchSubmit != undefined){
-          this.props.onSearchSubmit(this.state.playSeconds);
+          this.props.onSearchSubmit(this.state.playSeconds, this.state.playState);
         } 
       })
     }
@@ -135,10 +141,10 @@ class Musicbar extends React.Component{
       return ((m<10?'0'+m:m) + ':' + (s<10?'0'+s:s));
   }
   
-  showBookMark = () => {
-    this.setState({timemark:this.getAudioTimeString(this.state.playSeconds)});
-    console.log(this.state.timemark);
-  }
+  // showBookMark = () => {
+  //   this.setState({timemark: this.getAudioTimeString(this.state.playSeconds)});
+  //   console.log(this.TAG + "timemark: " + this.state.timemark);
+  // }
 
   render(){
     console.log(this.TAG + "render");
@@ -187,10 +193,11 @@ class Musicbar extends React.Component{
 
     //console.log(this.TAG + "current time: " + this.props.time);
     
+    // 0.100초 마다 그려주기 위해...
     this.timeout = setInterval(() => {
       if(this.sound && this.sound.isLoaded() && this.state.playState == 'playing' && !this.sliderEditing){
         this.sound.getCurrentTime((seconds, isPlaying) => {
-          this.setState({playSeconds:seconds});
+          this.setState({playSeconds: seconds});
         })
       }
     }, 100);

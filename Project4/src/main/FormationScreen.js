@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity
+  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity,
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';

@@ -16,8 +16,12 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+// firebase를 위해
+import androidx.multidex.MultiDexApplication;
 
-public class MainApplication extends Application implements ReactApplication {
+// firebase를 위해 MultiDexApplication로 변경
+// public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
