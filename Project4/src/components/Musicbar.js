@@ -1,17 +1,20 @@
 import React from 'react';
 import {
-  SafeAreaView,View,Text,Image,TouchableOpacity,Alert,StyleSheet
+  SafeAreaView,View,Text,Image,TouchableOpacity,Alert,StyleSheet,Dimensions
 } from 'react-native';
 
 import Sound from 'react-native-sound';
 import Slider from '@react-native-community/slider';
-import {COLORS} from '../values/colors';
+import {COLORS} from '../values/Colors';
+
+// 화면의 가로, 세로 길이 받아오기
+const {width,height} = Dimensions.get('window')
 
 //음악재생image 설정
-const img_pause = require('../../asset/ui_pause.png');
-const img_play = require('../../asset/ui_play.png');
-const img_playjumpleft = require('../../asset/ui_playjumpleft.png');
-const img_playjumpright = require('../../asset/ui_playjumpright.png');
+const img_pause = require('../../assets/drawable/ui_pause.png');
+const img_play = require('../../assets/drawable/ui_play.png');
+const img_playjumpleft = require('../../assets/drawable/ui_playjumpleft.png');
+const img_playjumpright = require('../../assets/drawable/ui_playjumpright.png');
 
 //음악재생바
 class Musicbar extends React.Component{
@@ -53,7 +56,9 @@ class Musicbar extends React.Component{
   }
   onSliderEditEnd = () => {
     this.sliderEditing = false;
-    this.props.onSearchSubmit(this.state.playSeconds);
+    if(this.props.onSearchSubmit != undefined){
+      this.props.onSearchSubmit(this.state.playSeconds);
+    }
   }
   onSliderEditing = value => {
     if(this.sound){
@@ -111,7 +116,9 @@ class Musicbar extends React.Component{
     // 애니메이션 실행을 위해 전달.
     if(this.props.playAnimation != undefined)
       this.props.playAnimation(false);
-    this.props.onSearchSubmit(this.state.playSeconds);
+    if(this.props.onSearchSubmit != undefined){
+      this.props.onSearchSubmit(this.state.playSeconds);
+    }
   }
 
   jumpPrev3Seconds = () => {this.jumpSeconds(-3);}
@@ -124,7 +131,10 @@ class Musicbar extends React.Component{
         else if(nextSecs > this.state.duration) nextSecs = this.state.duration;
         this.sound.setCurrentTime(nextSecs);
         this.setState({playSeconds:nextSecs});
-        this.props.onSearchSubmit(this.state.playSeconds);
+        
+        if(this.props.onSearchSubmit != undefined){
+          this.props.onSearchSubmit(this.state.playSeconds);
+        } 
       })
     }
   }
@@ -194,6 +204,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     alignItems: 'center',
     width: 50,
+    elevation: 10,
   },
   button: {
     marginVertical: 3,
@@ -211,7 +222,7 @@ const styles = StyleSheet.create({
     transform: [{rotate: '90deg'}], 
     flex: 1,
     flexDirection: 'column',
-    width: 220, 
+    width: height-140, 
     height: 20,
   },
 });

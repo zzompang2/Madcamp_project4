@@ -8,7 +8,7 @@ import Draggable from '../components/Draggable';
 import { TextInput } from 'react-native-gesture-handler';
 // import Position from '../components/Position';
 import Musicbar from '../components/Musicbar';
-import {COLORS} from '../values/colors';
+import {COLORS} from '../values/Colors';
 
 class FormationScreen extends React.Component {
   constructor(){
@@ -90,13 +90,15 @@ class FormationScreen extends React.Component {
     var draggables = [];
     for(var i=0; i<this.state.positionList.length; i++){
       draggables.push(
-        <View style={{position: 'absolute', top:0, left:0}}>
-        <Draggable 
-        number={i+1} 
-        position={this.state.positionList[i]} 
-        onSearchSubmit={this.onSearchSubmit} 
-        curTime={this.state.time} 
-        toggle={this.state.animationPlayToggle}/></View>
+        <View style={{position: 'absolute', alignItems: 'center'}}>
+          <Draggable 
+          number={i+1} 
+          position={this.state.positionList[i]} 
+          onSearchSubmit={this.onSearchSubmit} 
+          curTime={this.state.time} 
+          toggle={this.state.animationPlayToggle}
+          elevation={1}/>
+        </View>
       )
     }
 
@@ -105,9 +107,11 @@ class FormationScreen extends React.Component {
         <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation}/>
         <View style={styles.columnContainer}>
           <View style={styles.formationScreen}>
+            <Image source={require('../../assets/drawable/background_formation.png')}
+            style={{resizeMode: 'repeat'}}></Image>
             {draggables}
           </View>
-
+          
           {/* <FlatList
           style={{backgroundColor: 'yellow', width: 80, flex: 1}}
           data={this.state.positionList[0]}
@@ -127,10 +131,10 @@ class FormationScreen extends React.Component {
           }}
           keyExtractor={(item, index) => index.toString()}/> */}
           
-          <View style={{flexDirection:'row', backgroundColor: COLORS.grayDark, justifyContent:'space-between'}}>
+          <View style={{flexDirection:'row', justifyContent:'space-between', alignItems: 'baseline'}}>
             <Text style={{color: COLORS.white}}>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
             <TouchableOpacity onPress={this.addDraggable}>
-              <Text style={{color: COLORS.white}}>add new dancer</Text>
+              <Image source={require('../../assets/drawable/btn_adddancer.png')} style={styles.addbtn}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -143,14 +147,21 @@ const styles = StyleSheet.create({
   columnContainer : {
     flexDirection:'column',
     flex: 1,
+    backgroundColor: COLORS.blackLight,
   },
   rowContainer : {
     flexDirection:'row',
     flex: 1,
   },
   formationScreen: {
-    backgroundColor: COLORS.white,
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addbtn: {
+    width: 50,
+    height: 50,
+    margin: 15,
   }
 });
 

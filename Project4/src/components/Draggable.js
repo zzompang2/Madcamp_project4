@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text,StyleSheet,PanResponder,Animated } from "react-native";
-import {COLORS} from '../values/colors';
+import {COLORS} from '../values/Colors';
 
 export default class Draggable extends Component {
   constructor(props) {
@@ -48,7 +48,7 @@ export default class Draggable extends Component {
       onPanResponderRelease: (e, gesture) => {
         console.log(this.TAG + "onPanResponderRelease/터치 끝");
 
-        this._val = {x: this._prevVal.x+gesture.dx, y: this._prevVal.y+gesture.dy};
+        this._val = {x: Math.round((this._prevVal.x+gesture.dx)*100)/100, y: Math.round((this._prevVal.y+gesture.dy)*100)/100};
 
         // 부모 컴포넌트로 값 보내기
         this.props.onSearchSubmit(this.props.number-1, this._val.x, this._val.y);
@@ -159,7 +159,7 @@ let CIRCLE_RADIUS = 20;
 let styles = StyleSheet.create({
   // 모양 정의를 위한 스타일
   circle: {
-    backgroundColor: "skyblue",
+    backgroundColor: COLORS.purple,
     width: CIRCLE_RADIUS * 2,
     height: CIRCLE_RADIUS * 2,
     borderRadius: CIRCLE_RADIUS,

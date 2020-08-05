@@ -3,7 +3,8 @@ import {
   StyleSheet, View, FlatList, Text, TouchableOpacity,
 } from 'react-native';
 
-import {COLORS} from '../values/colors';
+import {COLORS} from '../values/Colors';
+import {FONTS} from '../values/Fonts';
 
 export default class MainScreen extends React.Component {
   constructor(props){
@@ -11,8 +12,8 @@ export default class MainScreen extends React.Component {
     this.state = {
       noteList: [
         {
-          title: "2019 봄 정기공연2019 봄 정기공연2019 봄 정기공연2019 봄 정기공연",
-          music: "악동뮤지션_사람들이 움직이는게 뭐라할까 신기하네",
+          title: "2019 봄 정기공연",
+          music: "악동뮤지션_사람들이 움직이는게",
           date: "2019/06/11",
         }, {
           title: "2019 가을 정기공연", 
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     height: '100%', 
     width: '100%',
     flex: 1,
-    backgroundColor: COLORS.blackLight,
+    backgroundColor: COLORS.blackDark,
   },
   rowContainer: {
     flexDirection:'row',
@@ -76,17 +77,20 @@ const styles = StyleSheet.create({
     color: COLORS.white, 
     fontSize:18,
     flex: 1,
+    fontFamily: FONTS.binggrae2_bold,
   },
   music: {
-    color: COLORS.white, 
+    color: COLORS.red, 
     fontSize:12,
     width: 250,
     paddingLeft: 10,
     textAlign: 'right',
+    fontFamily: FONTS.binggrae2,
   },
   date: {
-    color: COLORS.grayMiddle, 
+    color: COLORS.grayDark, 
     fontSize:12,
     paddingLeft: 10,
+    fontFamily: FONTS.binggrae2,
   }
 });

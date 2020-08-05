@@ -7,7 +7,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 //import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import {COLORS} from '../values/colors';
+import {COLORS} from '../values/Colors';
+import { FONTS } from '../values/Fonts';
 
 const Stack = createStackNavigator();
 
@@ -28,9 +29,10 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: COLORS.blackDark, height: 40},
-        headerTintColor: COLORS.yellow,
-        headerTitleAlign: 'center',
+        //headerStyle: { backgroundColor: COLORS.blackDark, height: 40},
+        //headerTintColor: COLORS.purpleLight,
+        //headerTitleAlign: 'left',
+        headerShown: false,
       }}>
         <Stack.Screen name="choreo note" component={MainScreen}/>
         <Stack.Screen name="choreo" component={ChoreoScreen} />

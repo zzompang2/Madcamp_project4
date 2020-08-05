@@ -1,24 +1,52 @@
 import React from "react";
-import {StyleSheet, Text, View, Image, ListView, TextInput, TouchableOpacity} from "react-native";
-import {COLORS} from '../values/colors';
+import {StyleSheet, Text, View, Image, Dimensions, TextInput, TouchableOpacity} from "react-native";
+import {COLORS} from '../values/Colors';
 import { FlatList } from "react-native-gesture-handler";
+import { FONTS } from "../values/Fonts";
 
-const ChoreoItem = ({index, lyrics, formation, choreo}) =>  (
-  <View style={styles.container}>
-    <Text style={styles.indexText}>{index+1}</Text>
-    <TouchableOpacity>
-      <Image source={formation} style={styles.formation}/>
-    </TouchableOpacity>
-    <View style={styles.columnContainer}>
-      <Text style={styles.lyricsText}>{lyrics}</Text>
-      <FlatList
-      data={choreo}
-      renderItem={({item}) =>
-        <TextInput style={styles.choreoText}>{item}</TextInput>}
-      keyExtractor={(item, index) => index.toString()}/>
+const {width,height} = Dimensions.get('window')
+
+const ChoreoItem = ({index, lyrics, formation, choreo, position}) => {
+
+  console.log("w,h: " + width + ", " + height);
+  var draggables = [];
+  for(var i=0; i<position.length; i++){
+    draggables.push(
+      <View 
+      style={[styles.circle, {
+        position: 'absolute', 
+        // position에선 원점이 중심이지만
+        // 여기에선 원점이 사각형의 왼쪽위 모서리이기 때문에
+        // 작은 화면의 절반 더하고(+90/+55)
+        // 원의 반지름만큼 빼줘야 한다(-8)
+        left: position[i].posx*160/width + 90 - 8,
+        top: position[i].posy*90/height + 55 - 8,
+      }]}/>
+    )
+  }
+  return(
+    <View style={styles.container}>
+      <Text style={styles.indexText}>{index+1}</Text>
+      {/* <TouchableOpacity>
+        <Image source={formation} style={styles.formation}/>
+      </TouchableOpacity> */}
+
+      <View style={styles.formation}>
+        {/* <View style={[styles.circle, {position: 'absolute', left: position[0].posx+75, top: position[0].posy+50}]}/> */}
+        {draggables}
+      </View>
+
+      <View style={styles.columnContainer}>
+        <Text style={styles.lyricsText}>{lyrics}</Text>
+        <FlatList
+        data={choreo}
+        renderItem={({item}) =>
+          <TextInput style={styles.choreoText}>{item}</TextInput>}
+        keyExtractor={(item, index) => index.toString()}/>
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 const styles = StyleSheet.create({
   container : {
@@ -31,7 +59,8 @@ const styles = StyleSheet.create({
   indexText: {
     fontSize: 15,
     marginRight: 7,
-    color: COLORS.grayMiddle,
+    color: COLORS.grayDark,
+    fontFamily: FONTS.binggrae2_bold,
   },
   columnContainer: {
     flexDirection:'column',
@@ -41,22 +70,40 @@ const styles = StyleSheet.create({
   },
   lyricsText: {
     fontSize: 15,
-    color: COLORS.yellow,
-    // borderBottomWidth: 0.8,
-    // borderBottomColor: COLORS.grayDark,
+    color: COLORS.purple,
+    paddingTop: 2,
     paddingBottom: 5,
+    paddingLeft: 0,
+    marginBottom: 5,
+    fontFamily: FONTS.binggrae2,
+    // backgroundColor: COLORS.yellow,
+    // borderRadius: 20,
   },
   choreoText: {
     fontSize: 15,
     color: COLORS.white,
-    padding: 0,
+    paddingTop: 3,
+    paddingBottom: 3,
+    paddingLeft: 0,
+    paddingRight: 0,
     borderTopWidth: 0.8,
     borderTopColor: COLORS.grayDark,
   },
   formation: {
-    height: 100, 
-    width: 150,
+    height: 110, 
+    width: 180,
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.red,
+    backgroundColor: COLORS.blackLight,
+  },
+  circle: {
+    backgroundColor: COLORS.purple,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    padding: 0,
+    margin: 0,
   },
 })
 
