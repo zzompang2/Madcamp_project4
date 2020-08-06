@@ -36,7 +36,7 @@ export default class ChoreoScreen extends React.Component {
     this.notePull(this.state.title);
   }
 
-  // performance이름으로 데이타베이스의 정보 받아오기
+  // 노트 이름으로 데이타베이스의 정보 받아오기
   notePull(noteTitle) {
     console.log("notePull");
 
@@ -53,7 +53,6 @@ export default class ChoreoScreen extends React.Component {
     var _positionList=[];
     firebaseRef.collection('positionList').get().then(function(positionDoc) {
       positionDoc.forEach(function(doc) {
-        console.log("[position.length]: " + doc.data().pos.length);
         _positionList.push([...doc.data().pos]);
       });
       this.setState({positionList: _positionList});
@@ -67,18 +66,41 @@ export default class ChoreoScreen extends React.Component {
 
     const firebaseRef = firestore().collection('ChoreoNote').doc(noteTitle);
     firebaseRef.set({
-        title: this.state.title,
-        music: this.state.music,
-        date: this.state.date,
-        choreoList: this.state.choreoList,
-      })
+      title: this.state.title,
+      music: this.state.music,
+      date: this.state.date,
+      choreoList: this.state.choreoList,
+    })
 
-    for (var i = 0; i < this.state.positionList.length; i++) {
-      // console.log('ggg : ',this.state.positionList[i]);
-      firebaseRef.collection('positionList').doc(i.toString()).set({
-          pos: this.state.positionList[i]
-      })
-    }
+    const _positionList = this.state.positionList;
+
+    firebaseRef.collection('positionList').get().then((positionDoc) => {
+      positionDoc.forEach(function(doc) {
+        if(doc.id < _positionList.length){
+          // doc.data()({ pos: _positionList[doc.id] })
+          console.log(doc.data());
+          firebaseRef.collection('positionList').doc(doc.id).set({
+            pos: _positionList[doc.id]
+          })
+        }
+        else {
+          firebaseRef.collection('positionList').doc(doc.id).delete();
+        }
+      });
+    })
+
+    // var i = 0;
+    // for (; i < this.state.positionList.length; i++) {
+    //   // console.log('ggg : ',this.state.positionList[i]);
+    //   firebaseRef.collection('positionList').doc(i.toString()).set({
+    //       pos: this.state.positionList[i]
+    //   })
+    // }
+
+    // console.log("??" + firebaseRef.collection('positionList').get().length);
+    // for (; i < firebaseRef.collection('positionList').length; i++) {
+    //   firebaseRef.collection('positionList').doc(i.toString()).delete();
+    // }
   }
 
   getCurPosition(positionList, time) {
@@ -137,6 +159,7 @@ export default class ChoreoScreen extends React.Component {
   }
 
   _makeChoreoItem = ({item, index}) => {
+    console.log(this.TAG + "_makeChoreoItem");
     return (
       // <TouchableOpacity onPress={() => this.formationPressHandler(item)}>
       <ChoreoItem

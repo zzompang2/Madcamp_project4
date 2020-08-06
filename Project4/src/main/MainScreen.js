@@ -30,7 +30,7 @@ export default class MainScreen extends React.Component {
     this.getNotes();
   }
 
-  //performance이름으로 데이타베이스의 정보 받아오기
+  // 노트 이름으로 데이타베이스의 정보 받아오기
   getNotes() {
     console.log(this.TAG + "getNotes");
     const firebaseRef = firestore().collection('ChoreoNote');
