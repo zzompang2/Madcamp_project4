@@ -6,26 +6,43 @@ import {
 import {COLORS} from '../values/Colors';
 import {FONTS} from '../values/Fonts';
 
+// firebase
+import firestore from '@react-native-firebase/firestore';
+
 export default class MainScreen extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       noteList: [
         {
-          title: "2019 봄 정기공연",
-          music: "악동뮤지션_사람들이 움직이는게",
-          date: "2019/06/11",
+          title: "...",
+          music: "...",
+          date: "...",
         }, {
-          title: "2019 가을 정기공연", 
-          music: "이승기_원하고 원망하죠",
-          date: "2019/11/28",
-        }, {
-          title: "2020 락킹 캠프", 
-          music: "임창정_소주 한 잔",
-          date: "2020/01/08",
+          title: "...", 
+          music: "...",
+          date: "...",
         }
       ]
     }
+    this.TAG = 'MainScreen/';
+    this.getNotes();
+  }
+
+  //performance이름으로 데이타베이스의 정보 받아오기
+  getNotes() {
+    console.log(this.TAG + "getNotes");
+    const firebaseRef = firestore().collection('ChoreoNote');
+    firebaseRef.get().then((doc) => {
+      var _noteList = [];
+      doc.forEach((queryDocumentSnapshot) => {
+        const _title = queryDocumentSnapshot.data().title;
+        const _music = queryDocumentSnapshot.data().music;
+        const _date = queryDocumentSnapshot.data().date;
+        _noteList.push({title: _title, music: _music, date: _date});
+      });
+      this.setState({noteList: _noteList});
+    })
   }
   
   render() {
@@ -35,7 +52,8 @@ export default class MainScreen extends React.Component {
         data={this.state.noteList}
         renderItem={({item}) => {
           return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo')}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo', {title: item.title})}>
+              
               <View style={styles.rowContainer}>
                 <Text numberOfLines={1} style={styles.title}>{item.title}</Text>
                 <View style={styles.columnContainer}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity,
+  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity,Dimensions,Alert
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
@@ -10,6 +10,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import Musicbar from '../components/Musicbar';
 import {COLORS} from '../values/Colors';
 import { useBackButton } from '@react-navigation/native';
+
+const {width,height} = Dimensions.get('window')
 
 class FormationScreen extends React.Component {
   constructor(props){
@@ -28,7 +30,7 @@ class FormationScreen extends React.Component {
 
     var prevPositionList = [...this.state.positionList];
     var prevPosition_i = [...this.state.positionList[index]];
-    const curTime = Math.round(this.state.time);
+    const curTime = Math.round(this.state.time * 10) / 10;
     const newPosition = {posx: _x, posy: _y, time: curTime};
 
     var i = 0;
@@ -82,6 +84,21 @@ class FormationScreen extends React.Component {
     );
   }
 
+  deleteDraggable = () => {
+    const index = this.state.positionList.length-1;
+    if(index < 0){
+      return;
+    }
+    var prevPositionList = [...this.state.positionList];
+    prevPositionList.splice(index, 1);
+
+    this.setState(
+      {
+        positionList: prevPositionList,
+      }
+    );
+  }
+
   render() {
     console.log(this.TAG + "render");
     
@@ -108,15 +125,20 @@ class FormationScreen extends React.Component {
         <View style={styles.columnContainer}>
           <View style={styles.formationScreen}>
             <Image source={require('../../assets/drawable/background_formation.png')}
-            style={{resizeMode: 'repeat'}}></Image>
+            style={{width: width, height: height}}></Image>
             {draggables}
           </View>
           <View style={{flexDirection:'row', justifyContent:'space-between', alignItems: 'baseline'}}>
-            <Text style={{color: COLORS.white, flex: 1}}>{Math.round(this.state.time)}: {this.pos.x}, {this.pos.y}</Text>
+            <Text style={{color: COLORS.white, flex: 1}}>{Math.round(this.state.time * 10) / 10}: {this.pos.x}, {this.pos.y}</Text>
             <TouchableOpacity onPress={this.addDraggable}>
               <Image source={require('../../assets/drawable/btn_adddancer.png')} style={styles.button}/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo', {time: this.state.time, positionList: this.state.positionList})}>
+            <TouchableOpacity onPress={this.deleteDraggable}>
+              <Image source={require('../../assets/drawable/btn_deletedancer.png')} style={styles.button}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => 
+              // this.props.route.params.updatePositionList(this.state.positionList);
+              this.props.navigation.navigate('choreo', {time: this.state.time, positionList: this.state.positionList})}>
               <Image source={require('../../assets/drawable/btn_complete.png')} style={styles.button}/>
             </TouchableOpacity>
           </View>
@@ -144,8 +166,8 @@ const styles = StyleSheet.create({
   button: {
     width: 50,
     height: 50,
-    marginBottom: 15,
-    marginRight: 15,
+    marginBottom: 10,
+    marginRight: 10,
   }
 });
 

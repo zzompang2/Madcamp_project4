@@ -6,9 +6,9 @@ import { FONTS } from "../values/Fonts";
 
 const {width,height} = Dimensions.get('window')
 
-const ChoreoItem = ({index, lyrics, formation, choreo, position}) => {
+const ChoreoItem = ({index, lyrics, choreo, position}) => {
 
-  console.log("w,h: " + width + ", " + height);
+  //console.log("w,h: " + width + ", " + height);
   var draggables = [];
   for(var i=0; i<position.length; i++){
     draggables.push(
@@ -27,12 +27,9 @@ const ChoreoItem = ({index, lyrics, formation, choreo, position}) => {
   return(
     <View style={styles.container}>
       <Text style={styles.indexText}>{index+1}</Text>
-      {/* <TouchableOpacity>
-        <Image source={formation} style={styles.formation}/>
-      </TouchableOpacity> */}
-
       <View style={styles.formation}>
-        {/* <View style={[styles.circle, {position: 'absolute', left: position[0].posx+75, top: position[0].posy+50}]}/> */}
+      <Image source={require('../../assets/drawable/background_formation_small.png')} 
+        style={{height: 110, width: 180, borderRadius: 5, resizeMode: 'contain'}}/>    
         {draggables}
       </View>
 
