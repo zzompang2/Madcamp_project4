@@ -108,22 +108,47 @@ export default class ChoreoScreen extends React.Component {
     return curPositionList;
   }
 
-  formationPressHandler = (item) => {
+  formationPressHandler = (time) => {
     if(this.state.playState == 'paused')
-      this.props.navigation.navigate('formation', {time: item.time, positionList: this.state.positionList, updatePositionList: this.updatePositionList})
+      this.props.navigation.navigate('formation', {time: time, positionList: this.state.positionList, updatePositionList: this.updatePositionList})
     else
       Alert.alert('Notice', 'Can\'t edit while listening :)');
   }
 
+  lyricsPressHandler = () => {
+    this.props.navigation.navigate('lyrics', {curLyrics: this.makeLyricsList()})
+  }
+
+  addChoreoHandler = (itemIndex, index) => {
+    var curChoreoList = this.state.choreoList;
+    curChoreoList[itemIndex].choreo.splice(index+1, 0, "");
+    this.setState({choreoList: curChoreoList});
+  }
+
+  deleteChoreoHandler = (itemIndex, index) => {
+    var curChoreoList = this.state.choreoList;
+    if(curChoreoList[itemIndex].choreo.length == 1){
+      curChoreoList[itemIndex].choreo.splice(index, 1, "");
+    }
+    else{
+      curChoreoList[itemIndex].choreo.splice(index, 1);
+    }
+    this.setState({choreoList: curChoreoList});
+  }
+
   _makeChoreoItem = ({item, index}) => {
     return (
-      <TouchableOpacity onPress={() => this.formationPressHandler(item)}>
-        <ChoreoItem
-        index={index}
-        lyrics={item.lyrics} 
-        choreo={item.choreo}
-        position={this.getCurPosition(this.state.positionList, item.time)}/>
-      </TouchableOpacity>
+      // <TouchableOpacity onPress={() => this.formationPressHandler(item)}>
+      <ChoreoItem
+      itemIndex={index}
+      lyrics={item.lyrics} 
+      choreo={item.choreo}
+      position={this.getCurPosition(this.state.positionList, item.time)}
+      formationPressHandler={this.formationPressHandler}
+      time={item.time}
+      lyricsPressHandler={this.lyricsPressHandler}
+      addChoreoHandler={this.addChoreoHandler}
+      deleteChoreoHandler={this.deleteChoreoHandler}/>
     )
   }
 
@@ -180,7 +205,7 @@ export default class ChoreoScreen extends React.Component {
           newChoreoList.push({lyrics: lyricsList[i], choreo: [...prevChoreoList[i].choreo], time: prevChoreoList[i].time});
       }
       for(; i<lyricsList.length; i++)
-        newChoreoList.push({lyrics: lyricsList[i], choreo: [], time: 0});
+        newChoreoList.push({lyrics: lyricsList[i], choreo: [""], time: 0});
       
       this.setState({choreoList: newChoreoList});
     }
@@ -196,10 +221,21 @@ export default class ChoreoScreen extends React.Component {
           <TouchableOpacity onPress={() => this.notePush(this.state.title)}>
             <Image source={require('../../assets/drawable/btn_save.png')} style={styles.button}/>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('lyrics', {curLyrics: this.makeLyricsList()})}>
+          <TouchableOpacity onPress={() => this.lyricsPressHandler()}>
             <Image source={require('../../assets/drawable/btn_edit.png')} style={styles.button}/>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.notePull(this.state.title)}>
+          <TouchableOpacity onPress={() => {
+            Alert.alert("새로고침", "현재 데이터가 지워지고 가장 최근에 저장한 데이터로 교체됩니다. 계속하시겠습니까?",
+            [
+              {
+                text: "예(현재 데이터 삭제)",
+                onPress: () => {this.notePull(this.state.title)},
+              },
+              {
+                text: "아니오",
+              }
+            ], {cancelable: false})
+            }}>
             <Image source={require('../../assets/drawable/btn_refresh.png')} style={styles.button}/>
           </TouchableOpacity>
         </View>

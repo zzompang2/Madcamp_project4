@@ -6,7 +6,7 @@ import { FONTS } from "../values/Fonts";
 
 const {width,height} = Dimensions.get('window')
 
-const ChoreoItem = ({index, lyrics, choreo, position}) => {
+const ChoreoItem = ({itemIndex, lyrics, choreo, position, formationPressHandler, time, lyricsPressHandler, addChoreoHandler, deleteChoreoHandler}) => {
 
   //console.log("w,h: " + width + ", " + height);
   var draggables = [];
@@ -24,21 +24,49 @@ const ChoreoItem = ({index, lyrics, choreo, position}) => {
       }]}/>
     )
   }
+
+  // 초 => 분:초
+  function getAudioTimeString(seconds){
+    const h = parseInt(seconds/(60*60));
+    const m = parseInt(seconds%(60*60)/60);
+    const s = parseInt(seconds%60);
+
+    //return ((h<10?'0'+h:h) + ':' + (m<10?'0'+m:m) + ':' + (s<10?'0'+s:s));
+    return ((m<10?'0'+m:m) + ':' + (s<10?'0'+s:s));
+  }
+
   return(
     <View style={styles.container}>
-      <Text style={styles.indexText}>{index+1}</Text>
-      <View style={styles.formation}>
-      <Image source={require('../../assets/drawable/background_formation_small.png')} 
-        style={{height: 110, width: 180, borderRadius: 5, resizeMode: 'contain'}}/>    
-        {draggables}
-      </View>
+      <TouchableOpacity onPress={() => formationPressHandler(time)}>
+        <View style={styles.formation}>
+        <Image source={require('../../assets/drawable/background_formation_small.png')} 
+          style={{height: 106, width: 176, borderRadius: 4, resizeMode: 'contain'}}/>    
+          {draggables}
+        </View>
+      </TouchableOpacity>
 
       <View style={styles.columnContainer}>
-        <Text style={styles.lyricsText}>{lyrics}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end'}}>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={styles.indexText}>{itemIndex+1}</Text>
+            <TouchableOpacity onPress={() => lyricsPressHandler()}>
+              <Text style={styles.lyricsText}>{lyrics}</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.timeText}>{getAudioTimeString(time)}</Text>
+        </View>
         <FlatList
         data={choreo}
-        renderItem={({item}) =>
-          <TextInput style={styles.choreoText}>{item}</TextInput>}
+        renderItem={({item, index}) =>
+          <View style={styles.choreoContainer}>
+            <TextInput style={styles.choreoText}>{item}</TextInput>
+            <TouchableOpacity onPress={() => addChoreoHandler(itemIndex, index)}>
+              <Text style={styles.button}>+</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteChoreoHandler(itemIndex, index)}>
+              <Text style={styles.button}>-</Text>
+            </TouchableOpacity>
+          </View>}
         keyExtractor={(item, index) => index.toString()}/>
       </View>
     </View>
@@ -54,10 +82,14 @@ const styles = StyleSheet.create({
     // borderBottomColor: COLORS.grayDark,
   },
   indexText: {
-    fontSize: 15,
-    marginRight: 7,
+    fontSize: 9,
+    height: 20,
     color: COLORS.grayDark,
-    fontFamily: FONTS.binggrae2_bold,
+    fontFamily: FONTS.binggrae2,
+    paddingTop: 3,
+    paddingRight: 3,
+    paddingBottom: 0,
+    marginBottom: 0,
   },
   columnContainer: {
     flexDirection:'column',
@@ -67,14 +99,28 @@ const styles = StyleSheet.create({
   },
   lyricsText: {
     fontSize: 15,
-    color: COLORS.purple,
+    color: COLORS.red,
     paddingTop: 2,
     paddingBottom: 5,
     paddingLeft: 0,
-    marginBottom: 5,
+    fontFamily: FONTS.binggrae2,
+    // borderRadius: 20,
+  },
+  timeText: {
+    fontSize: 12,
+    color: COLORS.yellow,
+    paddingTop: 2,
+    paddingBottom: 2,
+    paddingRight: 10,
+    marginBottom: 2,
     fontFamily: FONTS.binggrae2,
     // backgroundColor: COLORS.yellow,
     // borderRadius: 20,
+  },
+  choreoContainer: {
+    flexDirection: 'row',
+    borderTopWidth: 0.8,
+    borderTopColor: COLORS.grayDark,
   },
   choreoText: {
     fontSize: 15,
@@ -83,26 +129,33 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
     paddingLeft: 0,
     paddingRight: 0,
-    borderTopWidth: 0.8,
-    borderTopColor: COLORS.grayDark,
+    flex: 1,
   },
   formation: {
     height: 110, 
     width: 180,
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: 15,
+    borderWidth: 2,
     borderColor: COLORS.purple,
     backgroundColor: COLORS.blackLight,
     marginTop: 5,
   },
   circle: {
-    backgroundColor: COLORS.red,
+    backgroundColor: COLORS.purple,
     width: 16,
     height: 16,
     borderRadius: 8,
     padding: 0,
     margin: 0,
   },
+  button: {
+    fontSize: 18,
+    color: COLORS.grayMiddle,
+    padding: 2,
+    marginRight: 8,
+    marginLeft: 4,
+    fontFamily: FONTS.binggrae2,
+  }
 })
 
 export default ChoreoItem
