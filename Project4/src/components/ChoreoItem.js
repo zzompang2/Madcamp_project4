@@ -6,9 +6,10 @@ import { FONTS } from "../values/Fonts";
 
 const {width,height} = Dimensions.get('window')
 
-const ChoreoItem = ({index, lyrics, formation, choreo, position}) => {
+const ChoreoItem = ({index, lyrics, choreo, position}) => {
 
   console.log("w,h: " + width + ", " + height);
+  console.log("lyrics: " + lyrics + ", " + index);
   var draggables = [];
   for(var i=0; i<position.length; i++){
     draggables.push(
@@ -26,24 +27,8 @@ const ChoreoItem = ({index, lyrics, formation, choreo, position}) => {
   }
   return(
     <View style={styles.container}>
-      <Text style={styles.indexText}>{index+1}</Text>
-      {/* <TouchableOpacity>
-        <Image source={formation} style={styles.formation}/>
-      </TouchableOpacity> */}
-
-      <View style={styles.formation}>
-        {/* <View style={[styles.circle, {position: 'absolute', left: position[0].posx+75, top: position[0].posy+50}]}/> */}
-        {draggables}
-      </View>
-
-      <View style={styles.columnContainer}>
-        <Text style={styles.lyricsText}>{lyrics}</Text>
-        <FlatList
-        data={choreo}
-        renderItem={({item}) =>
-          <TextInput style={styles.choreoText}>{item}</TextInput>}
-        keyExtractor={(item, index) => index.toString()}/>
-      </View>
+ 
+      
     </View>
   )
 }
@@ -55,6 +40,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start', // 텍스트 위쪽 정렬을 위해
     // borderBottomWidth: 0.8,
     // borderBottomColor: COLORS.grayDark,
+    backgroundColor: 'yellow',
+    flex: 1,
+    width: '100%',
+    height: '100%'
   },
   indexText: {
     fontSize: 15,
@@ -67,6 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 10,
     flex: 1,
+    backgroundColor: 'blue',
   },
   lyricsText: {
     fontSize: 15,
@@ -76,6 +66,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     marginBottom: 5,
     fontFamily: FONTS.binggrae2,
+    backgroundColor: 'yellow',
     // backgroundColor: COLORS.yellow,
     // borderRadius: 20,
   },
