@@ -5,4 +5,5 @@ export const FONTS = {
   February: 'February',
   binggrae2: 'binggrae2',
   binggrae2_bold: 'binggrae2_bold',
+  aAlleyGarden: 'aAlleyGarden',
 }

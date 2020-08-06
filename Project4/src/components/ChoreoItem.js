@@ -6,7 +6,15 @@ import { FONTS } from "../values/Fonts";
 
 const {width,height} = Dimensions.get('window')
 
-const ChoreoItem = ({itemIndex, lyrics, choreo, position, formationPressHandler, time, lyricsPressHandler, addChoreoHandler, deleteChoreoHandler}) => {
+const ChoreoItem = ({
+  itemIndex, lyrics, choreo, position, time, 
+  formationPressHandler,
+  lyricsPressHandler, 
+  addChoreoHandler, 
+  deleteChoreoHandler,
+  editChoreoHandler,
+  editTimeHandler,
+}) => {
 
   //console.log("w,h: " + width + ", " + height);
   var draggables = [];
@@ -53,13 +61,20 @@ const ChoreoItem = ({itemIndex, lyrics, choreo, position, formationPressHandler,
               <Text style={styles.lyricsText}>{lyrics}</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.timeText}>{getAudioTimeString(time)}</Text>
+          <TouchableOpacity onPress={() => editTimeHandler(itemIndex)}>
+            <Text style={styles.timeText}>{getAudioTimeString(time)}</Text>
+          </TouchableOpacity>
         </View>
         <FlatList
         data={choreo}
         renderItem={({item, index}) =>
           <View style={styles.choreoContainer}>
-            <TextInput style={styles.choreoText}>{item}</TextInput>
+            <TextInput 
+            style={styles.choreoText}
+            onChangeText={(text) => {
+              console.log("ham??");
+              editChoreoHandler(itemIndex, index, text)}}
+            >{item}</TextInput>
             <TouchableOpacity onPress={() => addChoreoHandler(itemIndex, index)}>
               <Text style={styles.button}>+</Text>
             </TouchableOpacity>
@@ -127,7 +142,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     paddingTop: 3,
     paddingBottom: 3,
-    paddingLeft: 0,
+    paddingLeft: 8,
     paddingRight: 0,
     flex: 1,
   },

@@ -71,36 +71,27 @@ export default class ChoreoScreen extends React.Component {
       date: this.state.date,
       choreoList: this.state.choreoList,
     })
-
-    const _positionList = this.state.positionList;
-
+    
     firebaseRef.collection('positionList').get().then((positionDoc) => {
+      const _positionList = this.state.positionList;
+      var curNum = 0;
+
       positionDoc.forEach(function(doc) {
-        if(doc.id < _positionList.length){
-          // doc.data()({ pos: _positionList[doc.id] })
-          console.log(doc.data());
-          firebaseRef.collection('positionList').doc(doc.id).set({
-            pos: _positionList[doc.id]
-          })
-        }
-        else {
-          firebaseRef.collection('positionList').doc(doc.id).delete();
-        }
+        curNum++;
       });
+
+      // curNum: 원래 있던 doc 개수
+      // _positionList.length: 수정한 후 doc 개수
+      for(var i=0; i<_positionList.length; i++){
+        firebaseRef.collection('positionList').doc(i.toString()).set({ pos: _positionList[i] });
+      }
+      // 1개 이상의 doc이 delete된 경우
+      if(curNum > _positionList.length){
+        for(; i<curNum; i++){
+          firebaseRef.collection('positionList').doc(i.toString()).delete();
+        }
+      }
     })
-
-    // var i = 0;
-    // for (; i < this.state.positionList.length; i++) {
-    //   // console.log('ggg : ',this.state.positionList[i]);
-    //   firebaseRef.collection('positionList').doc(i.toString()).set({
-    //       pos: this.state.positionList[i]
-    //   })
-    // }
-
-    // console.log("??" + firebaseRef.collection('positionList').get().length);
-    // for (; i < firebaseRef.collection('positionList').length; i++) {
-    //   firebaseRef.collection('positionList').doc(i.toString()).delete();
-    // }
   }
 
   getCurPosition(positionList, time) {
@@ -158,8 +149,21 @@ export default class ChoreoScreen extends React.Component {
     this.setState({choreoList: curChoreoList});
   }
 
+  editChoreoHandler = (itemIndex, index, text) => {
+    var _choreoList = this.state.choreoList;
+    _choreoList[itemIndex].choreo.splice(index, 1, text);
+    this.setState({choreoList: _choreoList});
+  }
+
+  editTimeHandler = (itemIndex) => {
+    console.log(this.TAG + "editTimeHandler");
+    var _choreoList = this.state.choreoList;
+    _choreoList[itemIndex].time = this.state.time;
+    this.setState({choreoList: _choreoList});
+  }
+
   _makeChoreoItem = ({item, index}) => {
-    console.log(this.TAG + "_makeChoreoItem");
+    //console.log(this.TAG + "_makeChoreoItem");
     return (
       // <TouchableOpacity onPress={() => this.formationPressHandler(item)}>
       <ChoreoItem
@@ -171,7 +175,9 @@ export default class ChoreoScreen extends React.Component {
       time={item.time}
       lyricsPressHandler={this.lyricsPressHandler}
       addChoreoHandler={this.addChoreoHandler}
-      deleteChoreoHandler={this.deleteChoreoHandler}/>
+      deleteChoreoHandler={this.deleteChoreoHandler}
+      editChoreoHandler={this.editChoreoHandler}
+      editTimeHandler={this.editTimeHandler}/>
     )
   }
 
