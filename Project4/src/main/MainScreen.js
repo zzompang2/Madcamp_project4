@@ -7,8 +7,6 @@ import {COLORS} from '../values/Colors';
 import {FONTS} from '../values/Fonts';
 
 // firebase
-import firebase from '@react-native-firebase/app';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 export default class MainScreen extends React.Component {
@@ -18,10 +16,14 @@ export default class MainScreen extends React.Component {
     this.state = {
       noteList: [
         {
-          title: "",
-          music: "",
-          date: "",
-        },
+          title: "...",
+          music: "...",
+          date: "...",
+        }, {
+          title: "...", 
+          music: "...",
+          date: "...",
+        }
       ]
     }
     this.TAG = 'MainScreen/';
@@ -43,13 +45,6 @@ export default class MainScreen extends React.Component {
       this.setState({noteList: _noteList});
     })
   }
-
-  makeNewProject = () => {
-    // console.log('hh:', this.state.performance, ', kk:', this.state.musictitle, ' ee:', this.state.choreoNote);
-    firestore().collection('ChoreoNote').doc('NoteList').set({
-      noteList: this.state.noteList,
-    })
-  }
   
   render() {
     console.log(this.TAG + "render");
@@ -60,6 +55,7 @@ export default class MainScreen extends React.Component {
         renderItem={({item, index}) => {
           return (
             <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo', {title: item.title})}>
+              
               <View style={styles.rowContainer}>
                 <Text numberOfLines={1} style={styles.title}>{item.title}</Text>
                 <View style={styles.columnContainer}>

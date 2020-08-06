@@ -2,6 +2,7 @@ import React from 'react';
 import MainScreen from './MainScreen'
 import ChoreoScreen from './ChoreoScreen'
 import FormationScreen from './FormationScreen';
+import LyricsScreen from './LyricsScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -38,6 +39,7 @@ export default function App() {
         <Stack.Screen name="choreo note" component={MainScreen}/>
         <Stack.Screen name="choreo" component={ChoreoScreen} />
         <Stack.Screen name="formation" component={FormationScreen} />
+        <Stack.Screen name="lyrics" component={LyricsScreen} />
     </Stack.Navigator>
     </NavigationContainer>
   );

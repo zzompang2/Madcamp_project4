@@ -8,8 +8,7 @@ const {width,height} = Dimensions.get('window')
 
 const ChoreoItem = ({index, lyrics, choreo, position}) => {
 
-  console.log("w,h: " + width + ", " + height);
-  console.log("lyrics: " + lyrics + ", " + index);
+  //console.log("w,h: " + width + ", " + height);
   var draggables = [];
   for(var i=0; i<position.length; i++){
     draggables.push(
@@ -27,8 +26,21 @@ const ChoreoItem = ({index, lyrics, choreo, position}) => {
   }
   return(
     <View style={styles.container}>
- 
-      
+      <Text style={styles.indexText}>{index+1}</Text>
+      <View style={styles.formation}>
+      <Image source={require('../../assets/drawable/background_formation_small.png')} 
+        style={{height: 110, width: 180, borderRadius: 5, resizeMode: 'contain'}}/>    
+        {draggables}
+      </View>
+
+      <View style={styles.columnContainer}>
+        <Text style={styles.lyricsText}>{lyrics}</Text>
+        <FlatList
+        data={choreo}
+        renderItem={({item}) =>
+          <TextInput style={styles.choreoText}>{item}</TextInput>}
+        keyExtractor={(item, index) => index.toString()}/>
+      </View>
     </View>
   )
 }

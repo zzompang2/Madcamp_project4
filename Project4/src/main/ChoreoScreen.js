@@ -1,51 +1,84 @@
 import React from 'react';
 import {
-  SafeAreaView, StyleSheet, View, FlatList, TouchableOpacity,Alert,
+  SafeAreaView, StyleSheet, View, FlatList, TouchableOpacity, Alert, Image,
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
 import Musicbar from '../components/Musicbar';
 import {COLORS} from '../values/Colors';
 
+import firestore from '@react-native-firebase/firestore';
+
 export default class ChoreoScreen extends React.Component {
   constructor(props){
     console.log("ChoreoScreen/constructor");
     super(props);
     this.state = {
-      choreoNote: [{
-        lyrics: "사람들이 움직이는 게 ", 
-        choreo: ["업락", "다운락", "다운락", "다운락", "다운락", "다운락"],
-        time: 0,
-      }, {
-        lyrics: "신기해", 
-        choreo: ["스쿠바", "스쿠바2"],
-        time: 10,
-      },{
-        lyrics: "팔다리가 앞뒤로 막 움 움 움 움직이는 게", 
-        choreo: ["스쿠비두"],
-        time: 20,
-      }],
+      title: this.props.route.params.title,
+      date: "",
+      music: "",
+      choreoList: [], // [{lyrics: "...", choreo: ["..."], time: 0,}, ... ]
       time: 0,
       playState: 'paused',
+      positionList: [
+        [
+          {posx: 0, posy:0, time: 0},
+        ],
+      ],
     }
-    this.positionList = [
-      [
-        {posx: 0, posy:0, time: 0},
-        {posx: 100, posy:0, time: 10},
-        {posx: 100, posy:100, time: 20},
-      ],
-      [
-        {posx: 100, posy:0, time: 0},
-        {posx: 0, posy:-50, time: 5},
-        {posx: -70, posy:50, time: 30},
-      ],
-      [
-        {posx: 65, posy:-90, time: 0},
-        {posx: 5, posy:60, time: 10},
-        {posx: 9, posy:-89, time: 20},
-      ],
-    ];
+    // this.positionList = [
+    //   [
+    //     {posx: 0, posy:0, time: 0},
+    //   ],
+    // ];
+
     this.TAG = 'ChoreoScreen/';
+    this.notePull(this.state.title);
+  }
+
+  // performance이름으로 데이타베이스의 정보 받아오기
+  notePull(noteTitle) {
+    console.log("notePull");
+
+    const firebaseRef = firestore().collection('ChoreoNote').doc(noteTitle);
+
+    firebaseRef.get().then(function(doc) {
+      // console.log("doc: " + doc.data().title);
+      this.setState({ 
+        date: doc.data().date,
+        music: doc.data().music,
+        choreoList: doc.data().choreoList});
+    }.bind(this));
+
+    var _positionList=[];
+    firebaseRef.collection('positionList').get().then(function(positionDoc) {
+      positionDoc.forEach(function(doc) {
+        console.log("[position.length]: " + doc.data().pos.length);
+        _positionList.push([...doc.data().pos]);
+      });
+      this.setState({positionList: _positionList});
+    }.bind(this));
+    
+  }
+
+  // 데이타베이스에 정보 업로드 하기
+  notePush(noteTitle) {
+    console.log("notePush");
+
+    const firebaseRef = firestore().collection('ChoreoNote').doc(noteTitle);
+    firebaseRef.set({
+        title: this.state.title,
+        music: this.state.music,
+        date: this.state.date,
+        choreoList: this.state.choreoList,
+      })
+
+    for (var i = 0; i < this.state.positionList.length; i++) {
+      // console.log('ggg : ',this.state.positionList[i]);
+      firebaseRef.collection('positionList').doc(i.toString()).set({
+          pos: this.state.positionList[i]
+      })
+    }
   }
 
   getCurPosition(positionList, time) {
@@ -75,19 +108,21 @@ export default class ChoreoScreen extends React.Component {
     return curPositionList;
   }
 
+  formationPressHandler = (item) => {
+    if(this.state.playState == 'paused')
+      this.props.navigation.navigate('formation', {time: item.time, positionList: this.state.positionList, updatePositionList: this.updatePositionList})
+    else
+      Alert.alert('Notice', 'Can\'t edit while listening :)');
+  }
+
   _makeChoreoItem = ({item, index}) => {
     return (
-      <TouchableOpacity onPress={() => {
-        if(this.state.playState == 'paused')
-          this.props.navigation.navigate('formation', {time: item.time, positionList: this.positionList})
-        else
-          Alert.alert('Notice', 'Can\'t edit while listening :)');
-      }}>
+      <TouchableOpacity onPress={() => this.formationPressHandler(item)}>
         <ChoreoItem
         index={index}
         lyrics={item.lyrics} 
         choreo={item.choreo}
-        position={this.getCurPosition(this.positionList, item.time)}/>
+        position={this.getCurPosition(this.state.positionList, item.time)}/>
       </TouchableOpacity>
     )
   }
@@ -98,20 +133,76 @@ export default class ChoreoScreen extends React.Component {
     this.setState({time: _time, playState: _playState});
   }
 
+  // LyricsScreen에 보낼 lyrics text 만들기
+  makeLyricsList() {
+    const curChoreoList = this.state.choreoList;
+    var lyricsText = "";
+
+    if(curChoreoList != undefined){
+      for(var i=0; i<curChoreoList.length; i++){
+        lyricsText = lyricsText + curChoreoList[i].lyrics;
+        if(i < curChoreoList.length-1)
+          lyricsText += "\n";
+      }
+    }
+    return lyricsText;
+  }
+
   render() {
     console.log(this.TAG + "render");
 
-    // FormationScreen에서 값을 받고 온 거라면 값 대입
-    if(this.props.route.params != undefined)
-      this.positionList = this.props.route.params.positionList;
+    // FormationScreen에서 값을 받아왔다면
+    if(this.props.navigation.dangerouslyGetState().routes.find(v => v.name === 'choreo').params.positionList != undefined){
+
+      console.log(this.TAG + "FormationScreen에서 값을 받아왔다면");
+
+      this.setState({positionList: this.props.route.params.positionList});
+      this.props.route.params.positionList = undefined;
+    }
+
+    // LyricsScreen에서 값을 받아왔다면 
+    if(this.props.navigation.dangerouslyGetState().routes.find(v => v.name === 'choreo').params.lyrics != undefined){
+
+      console.log(this.TAG + "LyricsScreen에서 값을 받아왔다면");
+
+      //const lyricsList = this.props.routes.params.lyrics;
+      const lyricsList = this.props.navigation.dangerouslyGetState().routes.find(v => v.name === 'choreo').params.lyrics;
+      this.props.navigation.dangerouslyGetState().routes.find(v => v.name === 'choreo').params.lyrics = undefined;
+
+      const prevChoreoList = this.state.choreoList;
+      var newChoreoList = [];
+
+      console.log("lyricsList: " + lyricsList.length);
+
+      var i=0;
+      if(prevChoreoList != undefined){
+        for(; i < prevChoreoList.length && i < lyricsList.length; i++)
+          newChoreoList.push({lyrics: lyricsList[i], choreo: [...prevChoreoList[i].choreo], time: prevChoreoList[i].time});
+      }
+      for(; i<lyricsList.length; i++)
+        newChoreoList.push({lyrics: lyricsList[i], choreo: [], time: 0});
+      
+      this.setState({choreoList: newChoreoList});
+    }
 
     return (
       <View style={styles.rowContainer}>
         <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} time={this.state.time}/>
         <FlatList
-        data={this.state.choreoNote}
+        data={this.state.choreoList}
         renderItem={this._makeChoreoItem}
-        keyExtractor={item => item.lyrics}/>
+        keyExtractor={(item, index) => index.toString()}/>
+        <View style={{flexDirection: 'column', justifyContent: 'flex-end'}}>
+          <TouchableOpacity onPress={() => this.notePush(this.state.title)}>
+            <Image source={require('../../assets/drawable/btn_save.png')} style={styles.button}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('lyrics', {curLyrics: this.makeLyricsList()})}>
+            <Image source={require('../../assets/drawable/btn_edit.png')} style={styles.button}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.notePull(this.state.title)}>
+            <Image source={require('../../assets/drawable/btn_refresh.png')} style={styles.button}/>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -130,4 +221,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     resizeMode: 'contain',
   },
+  button: {
+    width: 40,
+    height: 40,
+    marginTop: 10,
+    marginBottom: 10,
+    marginRight: 10,
+  }
 });
