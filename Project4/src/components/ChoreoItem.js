@@ -52,10 +52,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start', // 텍스트 위쪽 정렬을 위해
     // borderBottomWidth: 0.8,
     // borderBottomColor: COLORS.grayDark,
-    backgroundColor: 'yellow',
-    flex: 1,
-    width: '100%',
-    height: '100%'
   },
   indexText: {
     fontSize: 15,
@@ -68,7 +64,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 10,
     flex: 1,
-    backgroundColor: 'blue',
   },
   lyricsText: {
     fontSize: 15,
@@ -78,7 +73,6 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     marginBottom: 5,
     fontFamily: FONTS.binggrae2,
-    backgroundColor: 'yellow',
     // backgroundColor: COLORS.yellow,
     // borderRadius: 20,
   },
@@ -97,11 +91,12 @@ const styles = StyleSheet.create({
     width: 180,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: COLORS.red,
+    borderColor: COLORS.purple,
     backgroundColor: COLORS.blackLight,
+    marginTop: 5,
   },
   circle: {
-    backgroundColor: COLORS.purple,
+    backgroundColor: COLORS.red,
     width: 16,
     height: 16,
     borderRadius: 8,
