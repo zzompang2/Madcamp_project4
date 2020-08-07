@@ -108,7 +108,8 @@ export default class MakeScreen extends React.Component {
 };
 const styles = StyleSheet.create({
   appBar: {
-    width: '100%',
+    width: '95%',
+    marginHorizontal: '2.5%',
     height: 40,
     backgroundColor: COLORS.red,
     borderBottomRightRadius: 15,

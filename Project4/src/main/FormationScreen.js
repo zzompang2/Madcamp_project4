@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity,Dimensions,Alert
+  SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,FlatList,Image,TouchableOpacity,Dimensions,Alert, ImageBackground
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
@@ -20,7 +20,9 @@ class FormationScreen extends React.Component {
       positionList: this.props.route.params.positionList,
       time: this.props.route.params.time,
       animationPlayToggle: false,
+      music: this.props.route.params.music,
     }
+    
     this.pos = {x: 0, y: 0};
     this.TAG = "FormationScreen/";
   }
@@ -105,14 +107,14 @@ class FormationScreen extends React.Component {
     var draggables = [];
     for(var i=0; i<this.state.positionList.length; i++){
       draggables.push(
-        <View style={{position: 'absolute', alignItems: 'center'}}>
+        <View style={{position: 'absolute'}}>
           <Draggable 
           number={i+1} 
           position={this.state.positionList[i]} 
           onSearchSubmit={this.onSearchSubmit} 
           curTime={this.state.time} 
           toggle={this.state.animationPlayToggle}
-          elevation={1}/>
+          elevation={100}/>
         </View>
       )
     }
@@ -120,30 +122,40 @@ class FormationScreen extends React.Component {
     console.log(this.TAG + "current time2: " + this.state.time + "\n\n");
 
     return (
-      <View style={styles.rowContainer}>
-        <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation} time={this.state.time}/>
-        <View style={styles.columnContainer}>
-          <View style={styles.formationScreen}>
-            <Image source={require('../../assets/drawable/background_formation.png')}
-            style={{width: width, height: height}}></Image>
-            {draggables}
-          </View>
-          <View style={{flexDirection:'row', justifyContent:'space-between', alignItems: 'baseline'}}>
-            <Text style={{color: COLORS.white, flex: 1}}>{Math.round(this.state.time * 10) / 10}: {this.pos.x}, {this.pos.y}</Text>
-            <TouchableOpacity onPress={this.addDraggable}>
-              <Image source={require('../../assets/drawable/btn_adddancer.png')} style={styles.button}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.deleteDraggable}>
-              <Image source={require('../../assets/drawable/btn_deletedancer.png')} style={styles.button}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => 
-              // this.props.route.params.updatePositionList(this.state.positionList);
-              this.props.navigation.navigate('choreo', {time: this.state.time, positionList: this.state.positionList})}>
-              <Image source={require('../../assets/drawable/btn_complete.png')} style={styles.button}/>
-            </TouchableOpacity>
+      <ImageBackground source={require('../../assets/drawable/background_formation.png')}
+      style={{width: '100%', height: '100%', backgroundColor: COLORS.blackLight, alignItems: 'center', justifyContent: 'center'}}>
+        {draggables}
+        <View style={styles.rowContainer}>
+          <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} playAnimation={this.playAnimation} time={this.state.time} musicTitle={this.state.music}/>
+          <View style={styles.columnContainer}>
+            <View style={styles.rowContainer}>
+              <Text style={{color: COLORS.white, flex: 1, marginVertical: 10}}>{Math.round(this.state.time * 10) / 10}: {this.pos.x}, {this.pos.y}</Text>
+              <TouchableOpacity onPress={this.addDraggable}>
+                <Image source={require('../../assets/drawable/btn_adddancer.png')} style={styles.button}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.deleteDraggable}>
+                <Image source={require('../../assets/drawable/btn_deletedancer.png')} style={styles.button}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => 
+                // this.props.route.params.updatePositionList(this.state.positionList);
+                this.props.navigation.navigate('choreo', {time: this.state.time, positionList: this.state.positionList})}>
+                <Image source={require('../../assets/drawable/btn_complete.png')} style={styles.button}/>
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+            data={this.state.positionList}
+            renderItem={(item) => {
+              return(
+                <View>
+
+                </View>
+              )
+            }}
+            keyExtractor={(item, index) => index.toString()}/>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     );
   }
 };
@@ -152,21 +164,22 @@ const styles = StyleSheet.create({
   columnContainer : {
     flexDirection:'column',
     flex: 1,
-    backgroundColor: COLORS.blackLight,
   },
   rowContainer : {
     flexDirection:'row',
     flex: 1,
+    justifyContent:'space-between', 
+    alignItems: 'flex-start'
   },
-  formationScreen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // formationScreen: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
   button: {
     width: 50,
     height: 50,
-    marginBottom: 10,
+    marginTop: 10,
     marginRight: 10,
   }
 });

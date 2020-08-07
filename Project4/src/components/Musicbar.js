@@ -1,20 +1,24 @@
 import React from 'react';
 import {
-  SafeAreaView,View,Text,Image,TouchableOpacity,Alert,StyleSheet,Dimensions
+  SafeAreaView,View,Text,Image,TouchableOpacity,Alert,StyleSheet,Dimensions,ImageBackground,
 } from 'react-native';
 
 import Sound from 'react-native-sound';
 import Slider from '@react-native-community/slider';
 import {COLORS} from '../values/Colors';
+import { FONTS } from '../values/Fonts';
 
 // 화면의 가로, 세로 길이 받아오기
 const {width,height} = Dimensions.get('window')
 
 //음악재생image 설정
-const img_pause = require('../../assets/drawable/ui_pause.png');
-const img_play = require('../../assets/drawable/ui_play.png');
-const img_playjumpleft = require('../../assets/drawable/ui_playjumpleft.png');
-const img_playjumpright = require('../../assets/drawable/ui_playjumpright.png');
+const img_pause = require('../../assets/drawable/btn_pause.png');
+const img_play = require('../../assets/drawable/btn_play.png');
+const img_background = require('../../assets/drawable/background_music_player.png');
+const img_before3 = require('../../assets/drawable/btn_before3.png');
+const img_after3 = require('../../assets/drawable/btn_after3.png');
+const img_before10 = require('../../assets/drawable/btn_before10.png');
+const img_after10 = require('../../assets/drawable/btn_after10.png');
 
 //음악재생바
 class Musicbar extends React.Component{
@@ -26,8 +30,9 @@ class Musicbar extends React.Component{
       playState: 'paused', //playing, paused
       playSeconds: this.props.time,
       duration: 0,
-      timemark: 'default'
+      timemark: 'default',
     }
+    this.music = this.props.musicTitle;
     this.sliderEditing = false;
     this.TAG = 'Musicbar/';
   }
@@ -53,12 +58,12 @@ class Musicbar extends React.Component{
     //const filepath = this.props.navigation.state.params.filepath;
     //const filepath = 'file:///Phone/sdcard/Music/madclown.mp3';
     const filepath = Sound.MAIN_BUNDLE;
-    //console.log('[Play]', filepath);
+    console.log("????: " + this.music + '.mp3');
 
-    this.sound = new Sound('madclown.mp3', filepath, (error) => {
+    this.sound = new Sound(this.music + '.mp3', filepath, (error) => {
       if (error) {
         console.log('failed to load the sound', error);
-        Alert.alert('Notice', 'audio file error. (Error code : 1)');
+        //Alert.alert('Notice', 'audio file error. (Error code : 1)');
         this.setState({playState:'paused'});
       }
       else{
@@ -93,7 +98,7 @@ class Musicbar extends React.Component{
         console.log('successfully finished playing');
       } else {
         console.log('playback failed due to audio decoding errors');
-        Alert.alert('Notice', 'audio file error. (Error code : 2)');
+        //Alert.alert('Notice', 'audio file error. (Error code : 2)');
       }
       this.setState({playState:'paused', playSeconds:0});
       this.sound.setCurrentTime(0);
@@ -115,6 +120,8 @@ class Musicbar extends React.Component{
 
   jumpPrev3Seconds = () => {this.jumpSeconds(-3);}
   jumpNext3Seconds = () => {this.jumpSeconds(3);}
+  jumpPrev10Seconds = () => {this.jumpSeconds(-10);}
+  jumpNext10Seconds = () => {this.jumpSeconds(10);}
   jumpSeconds = (secsDelta) => {
     if(this.sound){
       this.sound.getCurrentTime((secs, isPlaying) => {
@@ -146,47 +153,6 @@ class Musicbar extends React.Component{
   //   console.log(this.TAG + "timemark: " + this.state.timemark);
   // }
 
-  render(){
-    console.log(this.TAG + "render");
-    console.log(this.TAG + "playSeconds: " + this.state.playSeconds);
-
-    const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
-    const durationString = this.getAudioTimeString(this.state.duration);
-
-    return (
-      <View style={styles.musicbarContainer}>
-        <Text style={{color:'white'}}>{currentTimeString}</Text>
-        <Slider
-          style={styles.slider}
-          onTouchStart={this.onSliderEditStart}
-          onTouchEnd={this.onSliderEditEnd}
-          onValueChange={this.onSliderEditing}
-          value={this.state.playSeconds} 
-          maximumValue={this.state.duration} 
-          maximumTrackTintColor='gray' 
-          minimumTrackTintColor='white' 
-          thumbTintColor='white'
-          />
-        <Text style={{color:'white'}}>{durationString}</Text>
-        {this.state.playState == 'playing' && 
-        <TouchableOpacity onPress={this.pause} style={styles.button}>
-          <Image source={img_pause} style={styles.button}/>
-        </TouchableOpacity>}
-        {this.state.playState == 'paused' && 
-        <TouchableOpacity onPress={this.play} style={styles.button}>
-          <Image source={img_play} style={{width:20, height:20}}/>
-        </TouchableOpacity>}
-        <TouchableOpacity onPress={this.jumpPrev3Seconds} style={{justifyContent:'center'}}>
-          <Image source={img_playjumpleft} style={styles.button}/>
-          <Text style={styles.buttonText}>3</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.jumpNext3Seconds} style={{justifyContent:'center'}}>
-          <Image source={img_playjumpright} style={styles.button}/>
-          <Text style={styles.buttonText}>3</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
   componentDidMount(){
     console.log(this.TAG + "componentDidMount");
     this.load();
@@ -214,24 +180,95 @@ class Musicbar extends React.Component{
       clearInterval(this.timeout);
     }
   }
+
+  render(){
+    console.log(this.TAG + "render");
+    console.log(this.TAG + "playSeconds: " + this.state.playSeconds);
+
+    const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
+    const durationString = this.getAudioTimeString(this.state.duration);
+
+    return (
+      <View style={styles.musicbarContainer}>
+        <ImageBackground source={img_background} style={{width: '100%', height: '100%', justifyContent: 'center'}}>
+          <View style={styles.rowContainer}>
+            <Slider
+            style={styles.slider}
+            onTouchStart={this.onSliderEditStart}
+            onTouchEnd={this.onSliderEditEnd}
+            onValueChange={this.onSliderEditing}
+            value={this.state.playSeconds}
+            maximumValue={this.state.duration}
+            maximumTrackTintColor={COLORS.grayLight}
+            minimumTrackTintColor={COLORS.purple} 
+            thumbTintColor={COLORS.red}
+            />
+            <View style={styles.columnContainer}>
+              <TouchableOpacity onPress={this.jumpPrev10Seconds}>
+                <Image source={img_before10} style={[styles.jumpButton, {marginBottom: 10}]}/>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={this.jumpPrev3Seconds}>
+                <Image source={img_before3} style={[styles.jumpButton, {marginBottom: 10}]}/>
+              </TouchableOpacity>
+
+              <Text style={styles.timeText}>{currentTimeString}</Text>
+
+              {this.state.playState == 'playing' && 
+              <TouchableOpacity onPress={this.pause}>
+                <Image source={img_pause} style={styles.playButton}/>
+              </TouchableOpacity>}
+              {this.state.playState == 'paused' && 
+              <TouchableOpacity onPress={this.play}>
+                <Image source={img_play} style={styles.playButton}/>
+              </TouchableOpacity>}
+
+              <Text style={styles.timeText}>{durationString}</Text>
+
+              <TouchableOpacity onPress={this.jumpNext3Seconds}>
+                <Image source={img_after3} style={[styles.jumpButton, {marginTop: 10}]}/>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={this.jumpNext10Seconds}>
+                <Image source={img_after10} style={[styles.jumpButton, {marginTop: 10}]}/>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ImageBackground>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
   musicbarContainer : {
-    //marginVertical:15, 
-    //marginHorizontal:15, 
-    padding: 5,
-    flexDirection:'column', 
-    backgroundColor: COLORS.blackDark,
-    //flex: 1,
-    alignItems: 'center',
-    width: 50,
+    width: 70,
     elevation: 10,
   },
-  button: {
-    marginVertical: 3,
-    width:20, 
-    height:20,
+  columnContainer: {
+    flexDirection:'column', 
+    alignItems: 'center',
+  },
+  rowContainer: {
+    flexDirection:'row', 
+    // backgroundColor: COLORS.purple,
+    alignItems: 'center',
+    flex: 1,
+  },
+  playButton: {
+    marginLeft: 50,
+    marginVertical: 10,
+    width:55, 
+    height:55,
+  },
+  jumpButton: {
+    width:18,
+    height:24,
+  },
+  timeText: {
+    color: COLORS.grayMiddle,
+    fontSize: 10,
+    fontFamily: FONTS.binggrae,
   },
   buttonText: {
     position:'absolute', 
@@ -241,11 +278,12 @@ const styles = StyleSheet.create({
     marginHorizontal:7
   },
   slider: {
-    transform: [{rotate: '90deg'}], 
-    flex: 1,
+    transform: [{rotate: '90deg'}, {translateY: -199}], 
     flexDirection: 'column',
-    width: height-140, 
+    width: height-24,
     height: 20,
+    // backgroundColor: COLORS.blue,
+    marginLeft: -366,
   },
 });
 

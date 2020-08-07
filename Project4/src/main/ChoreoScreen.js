@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  SafeAreaView, StyleSheet, View, FlatList, TouchableOpacity, Alert, Image,
+  SafeAreaView, StyleSheet, View, FlatList, TouchableOpacity, Alert, Image, Text,
 } from 'react-native';
 
 import ChoreoItem from '../components/ChoreoItem';
 import Musicbar from '../components/Musicbar';
 import {COLORS} from '../values/Colors';
+import {FONTS} from '../values/Fonts';
 
 import firestore from '@react-native-firebase/firestore';
 
@@ -16,7 +17,7 @@ export default class ChoreoScreen extends React.Component {
     this.state = {
       title: this.props.route.params.title,
       date: "",
-      music: "",
+      music: this.props.route.params.music,
       choreoList: [], // [{lyrics: "...", choreo: ["..."], time: 0,}, ... ]
       time: 0,
       playState: 'paused',
@@ -123,7 +124,7 @@ export default class ChoreoScreen extends React.Component {
 
   formationPressHandler = (time) => {
     if(this.state.playState == 'paused')
-      this.props.navigation.navigate('formation', {time: time, positionList: this.state.positionList, updatePositionList: this.updatePositionList})
+      this.props.navigation.navigate('formation', {time: time, positionList: this.state.positionList, updatePositionList: this.updatePositionList, music: this.state.music})
     else
       Alert.alert('Notice', 'Can\'t edit while listening :)');
   }
@@ -230,8 +231,9 @@ export default class ChoreoScreen extends React.Component {
 
       var i=0;
       if(prevChoreoList != undefined){
-        for(; i < prevChoreoList.length && i < lyricsList.length; i++)
+        for(; i < prevChoreoList.length && i < lyricsList.length; i++){
           newChoreoList.push({lyrics: lyricsList[i], choreo: [...prevChoreoList[i].choreo], time: prevChoreoList[i].time});
+        }
       }
       for(; i<lyricsList.length; i++)
         newChoreoList.push({lyrics: lyricsList[i], choreo: [""], time: 0});
@@ -241,32 +243,40 @@ export default class ChoreoScreen extends React.Component {
 
     return (
       <View style={styles.rowContainer}>
-        <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} time={this.state.time}/>
-        <FlatList
-        data={this.state.choreoList}
-        renderItem={this._makeChoreoItem}
-        keyExtractor={(item, index) => index.toString()}/>
-        <View style={{flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <TouchableOpacity onPress={() => this.notePush(this.state.title)}>
-            <Image source={require('../../assets/drawable/btn_save.png')} style={styles.button}/>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.lyricsPressHandler()}>
-            <Image source={require('../../assets/drawable/btn_edit.png')} style={styles.button}/>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {
-            Alert.alert("새로고침", "현재 데이터가 지워지고 가장 최근에 저장한 데이터로 교체됩니다. 계속하시겠습니까?",
-            [
-              {
-                text: "예(현재 데이터 삭제)",
-                onPress: () => {this.notePull(this.state.title)},
-              },
-              {
-                text: "아니오",
-              }
-            ], {cancelable: false})
-            }}>
-            <Image source={require('../../assets/drawable/btn_refresh.png')} style={styles.button}/>
-          </TouchableOpacity>
+        <Musicbar onSearchSubmit={this.onSearchSubmitInMusicbar} time={this.state.time} musicTitle={this.state.music}/>
+        <View style={styles.columnContainer}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 4}}>
+            <Text style={styles.title}>{this.state.title + " <" + this.state.music + ">"}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity onPress={() => this.notePush(this.state.title)} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={require('../../assets/drawable/btn_save.png')} style={styles.button}/>
+                <Text style={styles.buttonText}>save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.lyricsPressHandler()} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={require('../../assets/drawable/btn_edit.png')} style={styles.button}/>
+                <Text style={styles.buttonText}>edit lyrics</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                Alert.alert("새로고침", "현재 데이터가 지워지고 가장 최근에 저장한 데이터로 교체됩니다. 계속하시겠습니까?",
+                [
+                  {
+                    text: "예(현재 데이터 삭제)",
+                    onPress: () => {this.notePull(this.state.title)},
+                  },
+                  {
+                    text: "아니오",
+                  }
+                ], {cancelable: false})
+                }} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={require('../../assets/drawable/btn_refresh.png')} style={styles.button}/>
+                <Text style={styles.buttonText}>refresh</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <FlatList
+          data={this.state.choreoList}
+          renderItem={this._makeChoreoItem}
+          keyExtractor={(item, index) => index.toString()}/>
         </View>
       </View>
     );
@@ -279,6 +289,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.blackDark,
   },
+  columnContainer : {
+    flexDirection:'column',
+    flex: 1,
+  },
   playerBar: {
     height: '100%', 
     width: 50, 
@@ -287,10 +301,23 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   button: {
-    width: 40,
-    height: 40,
-    marginTop: 10,
-    marginBottom: 10,
+    width: 25,
+    height: 25,
+    marginVertical: 10,
+    marginHorizontal: 3,
+  },
+  buttonText: {
+    color: COLORS.red, 
+    fontSize: 13,
+    fontFamily: FONTS.binggrae,
+    marginVertical: 10,
     marginRight: 10,
-  }
+  },
+  title: {
+    color: COLORS.white, 
+    fontSize: 14,
+    fontFamily: FONTS.binggrae,
+    marginVertical: 10,
+    marginLeft: 10,
+  },
 });

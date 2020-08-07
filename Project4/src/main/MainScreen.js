@@ -88,7 +88,7 @@ export default class MainScreen extends React.Component {
         data={this.state.noteList}
         renderItem={({item, index}) => {
           return (
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo', {title: item.title})}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('choreo', {title: item.title, music: item.music})}>
               <View style={styles.rowContainer}>
                 <Text numberOfLines={1} style={styles.title}>{item.title}</Text>
                 <View style={styles.columnContainer}>
@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.blackDark,
   },
   appBar: {
-    width: '100%',
+    width: '95%',
+    marginHorizontal: '2.5%',
     height: 40,
     backgroundColor: COLORS.red,
     borderBottomRightRadius: 15,

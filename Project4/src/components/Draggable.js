@@ -17,7 +17,9 @@ export default class Draggable extends Component {
     this.panResponder = PanResponder.create({
       // 주어진 터치 이벤트에 반응할지를 결정.
       // 재생중일땐 움직이지 못하도록 하자.
-      onStartShouldSetPanResponder: (e, gesture) => { return !this.props.toggle },
+      onStartShouldSetPanResponder: (e, gesture) => { 
+        return !this.props.toggle
+      },
 
       // 터치이벤트 발생할 때
       onPanResponderGrant: (e, gesture) => {
@@ -163,7 +165,7 @@ let CIRCLE_RADIUS = 20;
 let styles = StyleSheet.create({
   // 모양 정의를 위한 스타일
   circle: {
-    backgroundColor: COLORS.purple,
+    backgroundColor: COLORS.yellow,
     width: CIRCLE_RADIUS * 2,
     height: CIRCLE_RADIUS * 2,
     borderRadius: CIRCLE_RADIUS,
